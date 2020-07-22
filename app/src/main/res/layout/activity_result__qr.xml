@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".result_QR"
+    android:background="@color/cardview_shadow_start_color">
+
+    <TextView
+        android:id="@+id/qr_result"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="QR CODE GENERATED"
+        android:textSize="25dp"
+        android:paddingTop="8dp"
+        android:gravity="center_horizontal"
+        android:background="@drawable/edit_round"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="17dp"/>
+
+    <ImageView
+        android:id="@+id/qrcode_image"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_below="@+id/qr_result"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@android:drawable/screen_background_dark_transparent"/>
+
+
+
+
+</RelativeLayout>
