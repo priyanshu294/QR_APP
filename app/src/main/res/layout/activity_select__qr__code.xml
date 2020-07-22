@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Select_QR_Code"
+    android:orientation="horizontal"
+    android:background="#00C853"
+    android:id="@+id/select_qr">
+
+
+
+    <ImageView
+        android:id="@+id/email"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/text_container1"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/email"
+        android:orientation="vertical"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:id="@+id/email_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="27dp"
+            android:text="Create QR Code for Email"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/wifi"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/email"/>
+
+    <LinearLayout
+        android:id="@+id/text_container2"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/wifi"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container1">
+
+        <TextView
+            android:id="@+id/wifi_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="27dp"
+            android:text="Create QR Code for Wifi"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/event"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/wifi"/>
+
+    <LinearLayout
+        android:id="@+id/text_container3"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/event"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container2">
+
+        <TextView
+            android:id="@+id/event_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="39dp"
+            android:text="Create QR Code for Event"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/contact"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/event"/>
+
+    <LinearLayout
+        android:id="@+id/text_container4"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/contact"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container3">
+
+        <TextView
+            android:id="@+id/contact_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="44dp"
+            android:text="Create QR Code for Contact"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/text"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/contact"/>
+
+    <LinearLayout
+        android:id="@+id/text_container5"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/text"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container4">
+
+        <TextView
+            android:id="@+id/Text_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="49dp"
+            android:text="Create QR Code for Text"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/website"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/text"/>
+
+    <LinearLayout
+        android:id="@+id/text_container6"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/website"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container5">
+
+        <TextView
+            android:id="@+id/website_text"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="51dp"
+            android:text="Create QR Code for Website"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/location"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/website"/>
+
+    <LinearLayout
+        android:id="@+id/text_container7"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/location"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container6">
+
+        <TextView
+            android:id="@+id/location_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="53dp"
+            android:text="Create QR Code for Location"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/phone"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/location"/>
+
+    <LinearLayout
+        android:id="@+id/text_container8"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/wifi"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container7">
+
+        <TextView
+            android:id="@+id/phone_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="56dp"
+            android:text="Create QR Code for Phone"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/message"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/images"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/phone"/>
+
+    <LinearLayout
+        android:id="@+id/text_container9"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_toRightOf="@id/wifi"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:layout_below="@+id/text_container8">
+
+        <TextView
+            android:id="@+id/message_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"
+            android:text="Create QR Code for Message"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
+</ScrollView>
