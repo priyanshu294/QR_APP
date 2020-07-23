@@ -13,6 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".URL"></activity>
+        <activity android:name=".SMS" />
+        <activity android:name=".Phone" />
+        <activity android:name=".Text" />
         <activity android:name=".Email" />
         <activity android:name=".Select_QR_Code" />
         <activity

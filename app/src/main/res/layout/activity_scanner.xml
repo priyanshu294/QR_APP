@@ -4,52 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_primary"
+    android:background="@color/cardview_dark_background"
     tools:context=".Scanner">
+
+
 
 
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scannerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
         app:frameAspectRatioHeight="1"
         app:frameAspectRatioWidth="1"
         app:frameColor="@android:color/white"
         app:frameCornersRadius="0dp"
         app:frameCornersSize="50dp"
         app:frameSize="0.75"
-        app:frameThickness="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:maskColor="#77000000" >
-
-
-    </com.budiyev.android.codescanner.CodeScannerView>
+        app:frameThickness="2dp"/>
 
     <TextView
         android:id="@+id/resultsOfQr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_below="@+id/scannerView"
+        android:layout_centerHorizontal="true"
         android:text="TextView"
+        android:layout_marginBottom="20dp"
         android:textAlignment="center"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
         android:textColor="#FFEE58"
         android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scannerView"
-        app:layout_constraintVertical_bias="0.89"
         android:layout_above="@+id/pick_up"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        />
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/pick_up"
@@ -64,8 +51,4 @@
         android:textSize="15dp"
         />
 
-
-
 </RelativeLayout>
-
-

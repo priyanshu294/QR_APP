@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,9 +65,53 @@ public class Select_QR_Code extends AppCompatActivity {
 
                 startActivity(new Intent(getApplicationContext(),Email.class));
 
+            }
+        });
+
+        //Onclick Text
+
+        textView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(),Text.class));
+            }
+        });
+
+        //Onclick phone
+
+        textView8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(),Phone.class));
 
             }
         });
+
+        //Onclick message
+
+        textView9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), SMS.class));
+
+            }
+        });
+
+
+        //Onclick website
+
+        textView6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), URL.class));
+
+            }
+        });
+
 
 
 

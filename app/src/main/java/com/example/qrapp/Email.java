@@ -15,6 +15,8 @@
     import androidmads.library.qrgenearator.QRGContents;
     import androidmads.library.qrgenearator.QRGEncoder;
 
+    import static java.security.AccessController.getContext;
+
     public class Email extends AppCompatActivity {
 
         Button button;
@@ -35,33 +37,25 @@
              button = findViewById(R.id.creare_btn);
 
             button.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
 
-                    String data1 = editText_add.getText().toString();
-                    String data2 = editText_sub.getText().toString();
-                    String data3 = editText_mes.getText().toString();
+                     String data1 =  "email: " + (editText_add.getText().toString()) + "\n sub: "+ (editText_sub.getText().toString()) + "\n body: " + (editText_mes.getText().toString());
+
                     if (data1.isEmpty()) {
                         editText_add.setError("Value Required.");
-                    } else if(data2.isEmpty()){
                         editText_sub.setError("Value Required.");
-                    } else if(data3.isEmpty()){
                         editText_mes.setError("Value Required.");
-                    }
-                    else {
-                        QRGEncoder qrgEncoder1 = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
-                        QRGEncoder qrgEncoder2 = new QRGEncoder(data2, null, QRGContents.Type.TEXT, 500);
-                        QRGEncoder qrgEncoder3 = new QRGEncoder(data3, null, QRGContents.Type.TEXT, 500);
 
+                    }
+                      else {
+                        QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
 
                         try {
-                            Bitmap qrBits1 = qrgEncoder1.getBitmap();
-                            Bitmap qrBits2 = qrgEncoder2.getBitmap();
-                            Bitmap qrBits3 = qrgEncoder3.getBitmap();
+                            Bitmap qrBits = qrgEncoder.getBitmap();
 
-                            imageView.setImageBitmap(qrBits1);
-                            imageView.setImageBitmap(qrBits2);
-                            imageView.setImageBitmap(qrBits3);
+                            imageView.setImageBitmap(qrBits);
 
                         } catch (Exception e) {
                             e.printStackTrace();
