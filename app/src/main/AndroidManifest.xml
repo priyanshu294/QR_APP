@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".URL"></activity>
+        <activity android:name=".Contact_info"></activity>
+        <activity android:name=".Wifi" />
+        <activity android:name=".URL" />
         <activity android:name=".SMS" />
         <activity android:name=".Phone" />
         <activity android:name=".Text" />

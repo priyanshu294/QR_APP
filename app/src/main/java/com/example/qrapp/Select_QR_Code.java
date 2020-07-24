@@ -113,6 +113,18 @@ public class Select_QR_Code extends AppCompatActivity {
         });
 
 
+        //Onclick wifi
+
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), Wifi.class));
+
+            }
+        });
+
+
 
 
 
