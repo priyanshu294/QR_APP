@@ -125,6 +125,42 @@ public class Select_QR_Code extends AppCompatActivity {
         });
 
 
+        //Onclick contact
+
+        textView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), Contact_info.class));
+
+            }
+        });
+
+
+        //Onclick event
+
+        textView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), Event.class));
+
+            }
+        });
+
+        //Onclick location
+
+        textView7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), GeoLocation.class));
+
+            }
+        });
+
+
+
 
 
 
