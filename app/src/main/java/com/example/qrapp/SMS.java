@@ -23,6 +23,8 @@ public class SMS extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText_num = findViewById(R.id.number_input);
         editText_mes = findViewById(R.id.message_input);

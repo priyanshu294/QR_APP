@@ -7,20 +7,22 @@
     tools:context=".MainActivity">
 
 
-
-
     <TextView
         android:id="@+id/qrInput"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="QR CODE GENERATOR AND SCANNER"
-        android:textSize="20dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="7dp"
+        android:background="#32B5C7"
         android:gravity="center_horizontal"
-        android:background="@drawable/edit_round"
+        android:paddingTop="10dp"
+        android:drawableLeft="@drawable/round_qr_code"
+        android:drawableRight="@drawable/round_qr_code_scanner"
+        android:text="QR CODE GENERATOR AND SCANNER"
+        android:textSize="19dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="7dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/generateBtn"
@@ -41,14 +43,13 @@
         android:id="@+id/qrPlaceHolder"
         android:layout_width="320dp"
         android:layout_height="340dp"
-        android:src="@drawable/images"
         android:layout_marginBottom="20dp"
+        android:src="@drawable/images"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/generateBtn"
-        app:layout_constraintVertical_bias="0.31"
-         />
+        app:layout_constraintVertical_bias="0.31" />
 
     <Button
         android:id="@+id/scanBtn"
@@ -65,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qrPlaceHolder" />
+
 
 
 

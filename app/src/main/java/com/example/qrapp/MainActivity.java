@@ -36,28 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//        generateBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String data = qrvalue.getText().toString();
-//                if(data.isEmpty()){
-//                    qrvalue.setError("Value Required.");
-//                }else {
-//                    QRGEncoder qrgEncoder = new QRGEncoder(data,null, QRGContents.Type.TEXT,500);
-//
-//                    try {
-//                      Bitmap qrBits = qrgEncoder.getBitmap();
-//
-//
-//                        qrImage.setImageBitmap(qrBits);
-//
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
+
 
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override

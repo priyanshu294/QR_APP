@@ -28,9 +28,11 @@
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_email);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-             editText_add = findViewById(R.id.address_input);
+
+            editText_add = findViewById(R.id.address_input);
              editText_sub = findViewById(R.id.subject_input);
              editText_mes = findViewById(R.id.message_input);
              imageView = findViewById(R.id.qrcode_image);

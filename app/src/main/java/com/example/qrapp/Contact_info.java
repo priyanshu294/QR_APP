@@ -21,6 +21,8 @@ public class Contact_info extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText_first_name = findViewById(R.id.first_name_input);
         editText_last_name = findViewById(R.id.last_name_input);

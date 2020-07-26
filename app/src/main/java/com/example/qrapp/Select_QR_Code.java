@@ -3,6 +3,7 @@ package com.example.qrapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.view.View;
@@ -21,6 +22,8 @@ public class Select_QR_Code extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select__qr__code);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // layout
         layout = findViewById(R.id.text_container1);
@@ -158,7 +161,6 @@ public class Select_QR_Code extends AppCompatActivity {
 
             }
         });
-
 
 
 

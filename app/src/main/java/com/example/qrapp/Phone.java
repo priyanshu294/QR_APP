@@ -22,6 +22,8 @@ public class Phone extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText = findViewById(R.id.phone_input);
         imageView = findViewById(R.id.qrcode_image);

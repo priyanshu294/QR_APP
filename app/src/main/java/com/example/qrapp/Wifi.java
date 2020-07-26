@@ -24,6 +24,8 @@ public class Wifi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText_ssid = findViewById(R.id.ssid_input);
         editText_pass = findViewById(R.id.password_input);

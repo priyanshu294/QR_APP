@@ -34,6 +34,8 @@ public class Event extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText_title = findViewById(R.id.title_input);
         editText_description = findViewById(R.id.description_input);

@@ -22,6 +22,8 @@ public class Text extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText = findViewById(R.id.text_input);
         imageView = findViewById(R.id.qrcode_image);

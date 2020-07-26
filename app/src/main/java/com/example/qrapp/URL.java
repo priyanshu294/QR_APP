@@ -22,6 +22,8 @@ public class URL extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText = findViewById(R.id.url_input);
         imageView = findViewById(R.id.qrcode_image);

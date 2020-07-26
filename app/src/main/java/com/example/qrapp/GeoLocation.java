@@ -22,6 +22,8 @@ public class GeoLocation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geo_location);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         editText_lat = findViewById(R.id.lat_input);
         editText_long = findViewById(R.id.long_input);
