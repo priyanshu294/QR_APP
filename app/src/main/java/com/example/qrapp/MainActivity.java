@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

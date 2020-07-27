@@ -257,7 +257,7 @@
         android:id="@+id/text_container8"
         android:layout_width="match_parent"
         android:layout_height="88dp"
-        android:layout_toRightOf="@id/wifi"
+        android:layout_toRightOf="@id/phone"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:layout_below="@+id/text_container7">
@@ -289,8 +289,8 @@
     <LinearLayout
         android:id="@+id/text_container9"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_toRightOf="@id/wifi"
+        android:layout_height="100dp"
+        android:layout_toRightOf="@id/message"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:layout_below="@+id/text_container8">
@@ -298,14 +298,14 @@
         <TextView
             android:id="@+id/message_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="59dp"
+            android:layout_marginTop="60dp"
+            android:layout_toRightOf="@id/message"
             android:text="Create QR Code for Message"
             android:textColor="@android:color/white"
             android:textSize="17dp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
