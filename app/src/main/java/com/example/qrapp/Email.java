@@ -23,6 +23,13 @@
     import android.widget.Toast;
 
 
+    import com.karumi.dexter.Dexter;
+    import com.karumi.dexter.PermissionToken;
+    import com.karumi.dexter.listener.PermissionDeniedResponse;
+    import com.karumi.dexter.listener.PermissionGrantedResponse;
+    import com.karumi.dexter.listener.PermissionRequest;
+    import com.karumi.dexter.listener.single.PermissionListener;
+
     import java.io.File;
     import java.io.FileNotFoundException;
     import java.io.FileOutputStream;
@@ -36,6 +43,8 @@
     import static java.security.AccessController.getContext;
 
     public class Email extends AppCompatActivity {
+
+        boolean permission = false;
 
         Button button;
         ImageView imageView;
@@ -57,8 +66,13 @@
              imageView = findViewById(R.id.qrcode_image);
              button = findViewById(R.id.creare_btn);
 
-            ActivityCompat.requestPermissions(Email.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-            ActivityCompat.requestPermissions(Email.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+
+
+
+//            ActivityCompat.requestPermissions(Email.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+//            ActivityCompat.requestPermissions(Email.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+
+
 
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -105,14 +119,26 @@
         public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
             switch (item.getItemId()) {
+
                 case R.id.download:
-                    saveToGallery();
-                    Toast.makeText(this,"Save QR Code",Toast.LENGTH_SHORT).show();
+                    if(permission==false){
+
+                        checkpermission();
+                    } else {
+
+                        saveToGallery();
+                        Toast.makeText(this,"Save QR Code",Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
 
+
                 case R.id.delete:
-                    Toast.makeText(this,"delete selected",Toast.LENGTH_SHORT).show();
+//                    imageView.setImageDrawable(null);
+//                    editText_add.getText().clear();
+//                    editText_mes.getText().clear();
+//                    editText_sub.getText().clear();
+                    Toast.makeText(this,"Delete QR Code",Toast.LENGTH_SHORT).show();
                     break;
 
                     default:
@@ -123,6 +149,8 @@
         }
 
         private void saveToGallery() {
+
+
             BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
             Bitmap bitmap = bitmapDrawable.getBitmap();
 
@@ -150,4 +178,36 @@
                 e.printStackTrace();
             }
         }
+
+        public void checkpermission() {
+
+
+            Dexter.withActivity(this)
+                    .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse response) {
+                              permission = true;
+                            Toast.makeText(Email.this, "Permission granted.", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse response) {
+                            permission = false;
+                            Toast.makeText(Email.this, "Permission is Required.", Toast.LENGTH_SHORT).show();
+
+
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                            token.continuePermissionRequest();
+
+
+                        }
+                    }).check();
+        }
+
+
     }
