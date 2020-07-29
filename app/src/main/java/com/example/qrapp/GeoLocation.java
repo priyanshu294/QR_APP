@@ -37,11 +37,13 @@ public class GeoLocation extends AppCompatActivity {
 
                 String data =  "geo: "+ (editText_lat.getText().toString()) +"," + (editText_long.getText().toString());
 
-                if (data.isEmpty()) {
+                String data_lat = editText_lat.getText().toString() ;
+                String data_long = editText_long.getText().toString() ;
+
+                if (data_lat.trim().isEmpty()) {
                     editText_lat.setError("Value Required.");
+                }else if(data_long.trim().isEmpty()){
                     editText_long.setError("Value Required.");
-
-
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);

@@ -55,11 +55,25 @@ public class Event extends AppCompatActivity {
 
                 String data =  "title: "+(editText_title.getText().toString()) +"\n des: " + (editText_description.getText().toString())+"\n place:"+(editText_location.getText().toString())+"\n organizer:"+(editText_organizer.getText().toString())+"\n start:"+(editText_startdate.getText().toString())+" - "+(editText_enddate.getText().toString());
 
-                if (data.isEmpty()) {
+                String data_title = editText_title.getText().toString() ;
+                String data_desc = editText_description.getText().toString() ;
+                String data_loc = editText_location.getText().toString() ;
+                String data_organ = editText_organizer.getText().toString() ;
+                String data_statdate = editText_startdate.getText().toString() ;
+                String data_enddata = editText_enddate.getText().toString() ;
+
+                if (data_title.trim().isEmpty()) {
                     editText_title.setError("Value Required.");
+                }else  if(data_desc.trim().isEmpty()){
                     editText_description.setError("Value Required.");
-
-
+                }else if(data_loc.trim().isEmpty()){
+                    editText_location.setError("Value Required.");
+                }else if(data_organ.trim().isEmpty()){
+                    editText_organizer.setError("Value Required.");
+                }else if(data_statdate.trim().isEmpty()){
+                    editText_startdate.setError("Value Required.");
+                }else if(data_enddata.trim().isEmpty()){
+                    editText_enddate.setError("Value Required.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
@@ -118,4 +132,5 @@ public class Event extends AppCompatActivity {
 
 
     }
+
 }

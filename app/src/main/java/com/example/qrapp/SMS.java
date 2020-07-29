@@ -38,11 +38,13 @@ public class SMS extends AppCompatActivity {
 
                 String data =  "Phone: " + (editText_num.getText().toString()) + "\n message: "+ (editText_mes.getText().toString());
 
-                if (data.isEmpty()) {
+                String data_phone = editText_num.getText().toString() ;
+                String data_mess = editText_mes.getText().toString() ;
+
+                if (data_phone.trim().isEmpty()) {
                     editText_num.setError("Value Required.");
+                } else if(data_mess.trim().isEmpty()){
                     editText_mes.setError("Value Required.");
-
-
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 500);

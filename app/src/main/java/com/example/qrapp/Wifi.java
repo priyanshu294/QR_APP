@@ -40,11 +40,13 @@ public class Wifi extends AppCompatActivity {
 
                 String data =  "ssid: "+(editText_ssid.getText().toString()) +"\n pass: " + (editText_pass.getText().toString());
 
-                if (data.isEmpty()) {
+                String data_ssid = editText_ssid.getText().toString() ;
+                String data_pass = editText_pass.getText().toString() ;
+
+                if (data_ssid.trim().isEmpty()) {
                     editText_ssid.setError("Value Required.");
+                }else if(data_pass.trim().isEmpty()){
                     editText_pass.setError("Value Required.");
-
-
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
