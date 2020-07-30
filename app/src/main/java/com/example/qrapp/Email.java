@@ -53,14 +53,14 @@ import static java.security.AccessController.getContext;
 
 public class Email extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG ="Email Class";
+    private static final String TAG = "Email Class";
     // variable name changed .
     boolean mPermission = false;
-    boolean isQRGenerated = false ;
+    boolean isQRGenerated = false;
 
     Button button;
     ImageView imageView;
-    EditText editText_add,editText_sub,editText_mes;
+    EditText editText_add, editText_sub, editText_mes;
 
 
     @Override
@@ -79,11 +79,11 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
         // onCLick() is called at last to make code look cleaner , please use this way from future.
         button.setOnClickListener(this);
     }
-
+    // Action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mymenu,menu);
+        inflater.inflate(R.menu.mymenu, menu);
         return true;
     }
 
@@ -96,7 +96,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
                 // checkpermission() called and then if-else
                 // used to confirm for status of permission.
                 checkpermission();
-                if(!checkpermission()){
+                if (!checkpermission()) {
                     checkpermission();
                 } else {
                     saveToGallery();
@@ -104,11 +104,15 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
                 break;
 
             case R.id.delete:
-                    deleteImage();
+                deleteImage();
                 break;
 
             case R.id.share:
-                shareImage();
+                if(!isQRGenerated){
+                    Toast.makeText(this, "Please Create QR Code.!", Toast.LENGTH_SHORT).show();
+                }else {
+                    shareImage();
+                }
                 break;
 
 
@@ -120,167 +124,153 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void deleteImage() {
-        imageView.setImageDrawable(null);
-        editText_add.getText().clear();
-        editText_mes.getText().clear();
-        editText_sub.getText().clear();
-        Toast.makeText(this,"Delete QR Code",Toast.LENGTH_SHORT).show();
+        if (!isQRGenerated) {
+            Toast.makeText(this, "QR code not generated.!", Toast.LENGTH_SHORT).show();
+        } else {
+            imageView.setImageDrawable(null);
+            editText_add.getText().clear();
+            editText_mes.getText().clear();
+            editText_sub.getText().clear();
+            Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
-    public void shareImage() {
+    private void shareImage() {
         // share using File Provider
 
-        Drawable drawable=imageView.getDrawable();
-        Bitmap bitmap=((BitmapDrawable)drawable).getBitmap();
 
-        try {
-            File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + "image.png");
-            FileOutputStream fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-            fOut.close();
-            file.setReadable(true, false);
-            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID +".provider", file);
-
-            intent.putExtra(Intent.EXTRA_STREAM, photoURI);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setType("image/png");
-
-            startActivity(Intent.createChooser(intent, "Share image via"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-//        shareIntent.setType("image/*");
-//
-//        shareIntent.putExtra(Intent.EXTRA_STREAM,);
-//
-//
-//        startActivity(Intent.createChooser(shareIntent,"Share Using"));
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-    private void saveToGallery() {
-        // checking for imageview is empty or not.
-
-        if(!isQRGenerated){
-            Toast.makeText(this, "QR code not generated.!", Toast.LENGTH_SHORT).show();
-        }else{
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-
-            FileOutputStream fileOutputStream = null;
-            File file = Environment.getExternalStorageDirectory();
-            File dir = new File(file.getAbsolutePath()+"/Qr code");
-            dir.mkdir();
-
-            String filename = String.format("%d.png",System.currentTimeMillis());
-            File outfile = new File(dir,filename);
-
-            try {
-                fileOutputStream = new FileOutputStream(outfile);
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
-                fileOutputStream.flush();
-                fileOutputStream.close();
-                Toast.makeText(this, "QR code saved \nInternal storage/Qr code", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Log.d(TAG, "saveToGallery() EXCEPTION : "+e.getMessage());
-                Toast.makeText(this, "Could not Download.!!!", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
-
-    private boolean checkpermission() {
-        // checkpermission returns boolean value.
-
-        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
-        Dexter.withActivity(this)
-                .withPermissions(permissions)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        Log.d(TAG, "onPermissionsChecked() Report = "+report);
-                        if(report.areAllPermissionsGranted()){
-                            mPermission = true ;
-                            Toast.makeText(Email.this, "Permission granted", Toast.LENGTH_SHORT).show();
-                        }else{
-                            mPermission = false;
-                            Toast.makeText(Email.this, "Permissions are Required.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-
-
-                }).check();
-           return mPermission ;
-    }
-
-    // used to confirm if imageview is empty or not
-    // BUT in this case its never empty as you have made its background grey  .
-    private boolean hasImage(@NonNull ImageView view) {
-        Drawable drawable = view.getDrawable();
-        boolean hasImage = (drawable != null);
-
-        if (hasImage && (drawable instanceof BitmapDrawable)) {
-            hasImage = ((BitmapDrawable)drawable).getBitmap() != null;
-        }
-
-        return hasImage;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if(view == button){
-            String data1 =  "email: " + (editText_add.getText().toString()) + "\n sub: "+
-                    (editText_sub.getText().toString()) + "\n body: " + (editText_mes.getText().toString());
-
-            String data_email = editText_add.getText().toString() ;
-            String data_sub = editText_sub.getText().toString() ;
-            String data_mes = editText_mes.getText().toString() ;
-
-            if (data_email.trim().isEmpty() ) {
-                editText_add.setError("Value Required.");
-            }else if(data_sub.trim().isEmpty()){
-                editText_sub.setError("Value Required.");
-            }else if(data_mes.trim().isEmpty()){
-                editText_mes.setError("Value Required.");
-            }
-            else {
-                QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
+            Drawable drawable = imageView.getDrawable();
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
                 try {
-                    Bitmap qrBits = qrgEncoder.getBitmap();
+                    File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + "image.png");
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                    file.setReadable(true, false);
+                    final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
 
-                    imageView.setImageBitmap(qrBits);
-                    isQRGenerated = true ;
+                    intent.putExtra(Intent.EXTRA_STREAM, photoURI);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setType("image/png");
 
+                    startActivity(Intent.createChooser(intent, "Share image via"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+        }
+
+
+        private void saveToGallery () {
+            // checking for imageview is empty or not.
+
+            if (!isQRGenerated) {
+                Toast.makeText(this, "QR code not generated.!", Toast.LENGTH_SHORT).show();
+            } else {
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                FileOutputStream fileOutputStream = null;
+                File file = Environment.getExternalStorageDirectory();
+                File dir = new File(file.getAbsolutePath() + "/Qr code");
+                dir.mkdir();
+
+                String filename = String.format("%d.png", System.currentTimeMillis());
+                File outfile = new File(dir, filename);
+
+                try {
+                    fileOutputStream = new FileOutputStream(outfile);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                    Toast.makeText(this, "QR code saved \nInternal storage/Qr code", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.d(TAG, "saveToGallery() EXCEPTION : " + e.getMessage());
+                    Toast.makeText(this, "Could not Download.!!!", Toast.LENGTH_SHORT).show();
+                }
             }
+
+        }
+
+        private boolean checkpermission () {
+            // checkpermission returns boolean value.
+
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+            Dexter.withActivity(this)
+                    .withPermissions(permissions)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            Log.d(TAG, "onPermissionsChecked() Report = " + report);
+                            if (report.areAllPermissionsGranted()) {
+                                mPermission = true;
+                                Toast.makeText(Email.this, "Permissions granted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                mPermission = false;
+                                Toast.makeText(Email.this, "Permissions are Required.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+
+
+                    }).check();
+            return mPermission;
+        }
+
+        // used to confirm if imageview is empty or not
+        // BUT in this case its never empty as you have made its background grey  .
+        private boolean hasImage (@NonNull ImageView view){
+            Drawable drawable = view.getDrawable();
+            boolean hasImage = (drawable != null);
+
+            if (hasImage && (drawable instanceof BitmapDrawable)) {
+                hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+            }
+
+            return hasImage;
+        }
+
+        @Override
+        public void onClick (View view){
+            if (view == button) {
+                String data1 = "email: " + (editText_add.getText().toString()) + "\n sub: " +
+                        (editText_sub.getText().toString()) + "\n body: " + (editText_mes.getText().toString());
+
+                String data_email = editText_add.getText().toString();
+                String data_sub = editText_sub.getText().toString();
+                String data_mes = editText_mes.getText().toString();
+
+                if (data_email.trim().isEmpty()) {
+                    editText_add.setError("Value Required.");
+                } else if (data_sub.trim().isEmpty()) {
+                    editText_sub.setError("Value Required.");
+                } else if (data_mes.trim().isEmpty()) {
+                    editText_mes.setError("Value Required.");
+                } else {
+                    QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
+
+                    try {
+                        Bitmap qrBits = qrgEncoder.getBitmap();
+
+                        imageView.setImageBitmap(qrBits);
+                        isQRGenerated = true;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
         }
 
     }
-
-}
