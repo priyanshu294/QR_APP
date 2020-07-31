@@ -84,6 +84,8 @@ public class Wifi extends AppCompatActivity {
                         Bitmap qrBits = qrgEncoder.getBitmap();
 
                         imageView.setImageBitmap(qrBits);
+                        isQRGenerated = true;
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
