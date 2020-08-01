@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Telephony;
@@ -198,6 +199,64 @@ public class Select_QR_Code extends AppCompatActivity implements RecyclerAdapter
 
     @Override
     public void onqrClick(int position) {
+
+        final Intent intent;
+        switch (position){
+            case 0:
+                 intent = new Intent(getApplicationContext(),Email.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+            case 1:
+                 intent = new Intent(getApplicationContext(),Wifi.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+
+            case 2:
+                intent = new Intent(getApplicationContext(),Event.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+            case 3:
+                intent = new Intent(getApplicationContext(),Contact_info.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+
+            case 4:
+                intent = new Intent(getApplicationContext(),Text.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+            case 5:
+                intent = new Intent(getApplicationContext(),URL.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+
+            case 6:
+                intent = new Intent(getApplicationContext(),GeoLocation.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+            case 7:
+                intent = new Intent(getApplicationContext(),Phone.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+
+            case 8:
+                intent = new Intent(getApplicationContext(),SMS.class);
+                intent.putExtra("qrcodename",qRcodeList.get(position).getQrcodename());
+                startActivity(intent);
+                break;
+
+                default:
+                    break;
+
+        }
+
 
 
     }
