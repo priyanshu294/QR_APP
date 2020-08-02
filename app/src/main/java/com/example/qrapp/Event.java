@@ -9,6 +9,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -216,6 +217,8 @@ public class Event extends AppCompatActivity {
             editText_startdate.getText().clear();
             editText_enddate.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+            imageView.setBackgroundColor(Color.rgb(128,128,128));
+            isQRGenerated = false;
         }
     }
 

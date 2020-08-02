@@ -195,6 +195,7 @@ public class Contact_info extends AppCompatActivity {
             editText_pincode.getText().clear();
             editText_url.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+            isQRGenerated = false;
         }
     }
 

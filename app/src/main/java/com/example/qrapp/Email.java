@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -132,6 +133,8 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
             editText_mes.getText().clear();
             editText_sub.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+            imageView.setBackgroundColor(Color.rgb(128,128,128));
+            isQRGenerated = false;
         }
     }
 

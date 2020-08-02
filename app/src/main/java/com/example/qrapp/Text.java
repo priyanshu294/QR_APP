@@ -7,6 +7,7 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -141,6 +142,8 @@ public class Text extends AppCompatActivity {
             imageView.setImageDrawable(null);
             editText.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+            imageView.setBackgroundColor(Color.rgb(128,128,128));
+            isQRGenerated = false;
         }
     }
 
