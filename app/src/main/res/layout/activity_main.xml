@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/qrInput"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="68dp"
         android:layout_marginTop="7dp"
         android:background="#32B5C7"
         android:gravity="center_horizontal"
@@ -19,7 +19,7 @@
         android:drawableLeft="@drawable/round_qr_code"
         android:drawableRight="@drawable/round_qr_code_scanner"
         android:text="QR CODE GENERATOR AND SCANNER"
-        android:textSize="18dp"
+        android:textSize="17sp"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_button"
         android:text="Generate Qr Code"
@@ -48,9 +48,10 @@
         android:src="@drawable/images"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/generateBtn"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintVertical_bias="0.25" />
 
     <Button
         android:id="@+id/scanBtn"
@@ -58,18 +59,18 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:text="SCAN Qr code"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/edit_button"
+        android:text="SCAN Qr code"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrPlaceHolder" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/qrPlaceHolder"
+        app:layout_constraintVertical_bias="0.437" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

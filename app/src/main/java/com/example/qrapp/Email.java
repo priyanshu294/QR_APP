@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -259,7 +260,10 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
                     editText_sub.setError("Value Required.");
                 } else if (data_mes.trim().isEmpty()) {
                     editText_mes.setError("Value Required.");
-                } else {
+                } else if(!Patterns.EMAIL_ADDRESS.matcher(editText_add.getText().toString()).matches()){
+                    editText_add.setError("Please Enter Valid Email.");
+                }
+                else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
 
                     try {
@@ -275,5 +279,6 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
             }
 
         }
+
 
     }

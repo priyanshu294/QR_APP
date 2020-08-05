@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +33,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.lang.String;
+import java.util.regex.Pattern;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -66,7 +69,9 @@ public class Phone extends AppCompatActivity {
                 String data =   editText.getText().toString();
                 if (data.isEmpty()) {
                     editText.setError("Value Required.");
+                } else if(!editText.getText().toString().matches("[0-9]{10}")){
 
+                    editText.setError("Enter Only 10 Digit Number.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.PHONE, 500);
@@ -249,4 +254,5 @@ public class Phone extends AppCompatActivity {
 
         return hasImage;
     }
+
 }

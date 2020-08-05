@@ -74,6 +74,8 @@ public class SMS extends AppCompatActivity {
                     editText_num.setError("Value Required.");
                 } else if(data_mess.trim().isEmpty()){
                     editText_mes.setError("Value Required.");
+                } else if(!editText_num.getText().toString().matches("[0-9]{10}")){
+                    editText_num.setError("Enter Only 10 Digit Number.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 500);

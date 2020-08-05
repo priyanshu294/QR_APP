@@ -87,7 +87,7 @@
         <ImageView
             android:id="@+id/qrcode_image"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="330dp"
             android:layout_below="@+id/end_date_input"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="60dp"

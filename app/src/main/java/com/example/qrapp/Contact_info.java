@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -109,6 +110,16 @@ public class Contact_info extends AppCompatActivity {
                     editText_pincode.setError("Value Required.");
                 }else if(data_url.trim().isEmpty()){
                     editText_url.setError("Value Required.");
+                } else if(!editText_first_name.getText().toString().matches("[a-z,A-Z]*")){
+                    editText_first_name.setError("Enter Only Character.");
+                } else if(!editText_last_name.getText().toString().matches("[a-z,A-Z]*")){
+                    editText_last_name.setError("Enter Only Character.");
+                }  else if(!Patterns.EMAIL_ADDRESS.matcher(editText_email.getText().toString()).matches()){
+                    editText_email.setError("Please Enter Valid Email.");
+                } else if(!editText_phone.getText().toString().matches("[0-9]{10}")){
+                    editText_phone.setError("Enter Only 10 Digit Number.");
+                } else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
+                    editText_pincode.setError("Enter Only 6 Digit Number.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);

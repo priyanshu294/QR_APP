@@ -77,6 +77,8 @@ public class Wifi extends AppCompatActivity {
                     editText_ssid.setError("Value Required.");
                 }else if(data_pass.trim().isEmpty()){
                     editText_pass.setError("Value Required.");
+                } else if(editText_pass.length()<6){
+                    editText_pass.setError("Please Enter Minimum 6 Char.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
