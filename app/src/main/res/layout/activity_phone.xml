@@ -16,9 +16,23 @@
             android:layout_height="wrap_content"
             android:hint="Phone number*"
             android:inputType="number"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="115dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            />
+
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="110dp"
+            android:layout_height="58dp"
+            app:ccp_textSize="16sp"
+            android:gravity="center"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_showNameCode="true"
+            android:layout_marginTop="10dp"
+            />
+
 
 
 

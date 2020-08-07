@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hbb20.CountryCodePicker;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -46,7 +47,7 @@ public class Contact_info extends AppCompatActivity {
     EditText editText_first_name,editText_last_name,editText_org,editText_email,editText_phone,editText_address,editText_city,editText_state,editText_contry,editText_pincode,editText_url;
     ImageView imageView;
     Button button;
-
+    private CountryCodePicker ccp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class Contact_info extends AppCompatActivity {
 
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
+        ccp = findViewById(R.id.ccp);
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -116,9 +118,10 @@ public class Contact_info extends AppCompatActivity {
                     editText_last_name.setError("Enter Only Character.");
                 }  else if(!Patterns.EMAIL_ADDRESS.matcher(editText_email.getText().toString()).matches()){
                     editText_email.setError("Please Enter Valid Email.");
-                } else if(!editText_phone.getText().toString().matches("[0-9]{10}")){
-                    editText_phone.setError("Enter Only 10 Digit Number.");
-                } else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
+                } else if(editText_phone.length()<4 || editText_phone.length()>12){
+                    editText_phone.setError("Enter Valid Phone Number.");
+                }
+                else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
                     editText_pincode.setError("Enter Only 6 Digit Number.");
                 }
                 else {

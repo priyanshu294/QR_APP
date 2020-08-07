@@ -27,9 +27,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -60,6 +62,9 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
     boolean mPermission = false;
     boolean isQRGenerated = false;
 
+    ScrollView scrollView;
+    FloatingActionButton floatingdown;
+
     Button button;
     ImageView imageView;
     EditText editText_add, editText_sub, editText_mes;
@@ -76,11 +81,27 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
         editText_mes = findViewById(R.id.message_input);
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
+        scrollView = findViewById(R.id.scroll);
+        floatingdown = findViewById(R.id.expand_down);
 
 
         // onCLick() is called at last to make code look cleaner , please use this way from future.
         button.setOnClickListener(this);
+
+        //down button
+
+        floatingdown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                button.isShown();
+
+            }
+        });
+
     }
+
+
     // Action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

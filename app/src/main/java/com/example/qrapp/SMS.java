@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hbb20.CountryCodePicker;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -46,6 +47,7 @@ public class SMS extends AppCompatActivity {
     EditText editText_num,editText_mes;
     ImageView imageView;
     Button button;
+    private CountryCodePicker ccp;
 
 
     @Override
@@ -59,6 +61,7 @@ public class SMS extends AppCompatActivity {
         editText_mes = findViewById(R.id.message_input);
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
+        ccp = findViewById(R.id.ccp);
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -74,8 +77,9 @@ public class SMS extends AppCompatActivity {
                     editText_num.setError("Value Required.");
                 } else if(data_mess.trim().isEmpty()){
                     editText_mes.setError("Value Required.");
-                } else if(!editText_num.getText().toString().matches("[0-9]{10}")){
-                    editText_num.setError("Enter Only 10 Digit Number.");
+                } else if(editText_num.length()<4 || editText_num.length()>12){
+
+                    editText_num.setError("Enter Valid Phone Number.");
                 }
                 else {
                     QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 500);
