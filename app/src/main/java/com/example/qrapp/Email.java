@@ -2,16 +2,20 @@ package com.example.qrapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MotionEventCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -23,10 +27,13 @@ import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -55,15 +62,16 @@ import androidmads.library.qrgenearator.QRGSaver;
 
 import static java.security.AccessController.getContext;
 
-public class Email extends AppCompatActivity implements View.OnClickListener {
+public class Email extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener {
 
     private static final String TAG = "Email Class";
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
 
-    ScrollView scrollView;
-    FloatingActionButton floatingdown;
+   private ScrollView scrollView;
+   private  CardView cardView;
+    private RelativeLayout root;
 
     Button button;
     ImageView imageView;
@@ -81,23 +89,31 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
         editText_mes = findViewById(R.id.message_input);
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
+
         scrollView = findViewById(R.id.scroll);
-        floatingdown = findViewById(R.id.expand_down);
+        root = findViewById(R.id.root);
+        cardView = findViewById(R.id.cv_marker);
+
 
 
         // onCLick() is called at last to make code look cleaner , please use this way from future.
         button.setOnClickListener(this);
 
-        //down button
 
-        floatingdown.setOnClickListener(new View.OnClickListener() {
+
+        //down button
+        cardView.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 button.isShown();
 
+
             }
         });
+
+        root.setOnTouchListener(this);
 
     }
 
@@ -285,7 +301,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
                     editText_add.setError("Please Enter Valid Email.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();
@@ -301,5 +317,39 @@ public class Email extends AppCompatActivity implements View.OnClickListener {
 
         }
 
+        // scroll down
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
 
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
     }
+    private void isInBound(){
+        Rect scrollBounds = new Rect();
+        scrollView.getHitRect(scrollBounds);
+        if (button.getLocalVisibleRect(scrollBounds)) {
+
+            cardView.setVisibility(View.GONE);
+        } else {
+
+            cardView.setVisibility(View.VISIBLE);
+        }
+    }
+}

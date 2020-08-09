@@ -82,7 +82,7 @@ public class SMS extends AppCompatActivity {
                     editText_num.setError("Enter Valid Phone Number.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();

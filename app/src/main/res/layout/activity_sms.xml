@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Email">
+    tools:context=".SMS"
+    android:fillViewport="true">
+
+<ScrollView
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <RelativeLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/number_input"
@@ -50,10 +59,10 @@
         <ImageView
             android:id="@+id/qrcode_image"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
+            android:layout_height="310dp"
             android:layout_below="@+id/message_input"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_marginRight="10dp"
             app:srcCompat="@android:drawable/screen_background_dark_transparent" />
 
@@ -69,7 +78,7 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="10dp"
@@ -81,3 +90,5 @@
 
     </RelativeLayout>
 </ScrollView>
+
+</RelativeLayout>

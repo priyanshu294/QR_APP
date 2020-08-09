@@ -63,6 +63,8 @@ public class Wifi extends AppCompatActivity {
         imageView = findViewById(R.id.qrcode_image);
         imageView_icon = findViewById(R.id.show_pass_btn);
 
+
+
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -81,7 +83,7 @@ public class Wifi extends AppCompatActivity {
                     editText_pass.setError("Please Enter Minimum 6 Char.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();

@@ -76,7 +76,7 @@ public class GeoLocation extends AppCompatActivity {
                     editText_long.setError("Value Required.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();

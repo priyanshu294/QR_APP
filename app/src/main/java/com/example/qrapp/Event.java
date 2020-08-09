@@ -2,7 +2,9 @@ package com.example.qrapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MotionEventCompat;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -10,6 +12,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -20,11 +23,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -42,7 +48,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Event extends AppCompatActivity {
+public class Event extends AppCompatActivity implements View.OnTouchListener{
 
     private static final String TAG = "Event Class";
     // variable name changed .
@@ -57,6 +63,10 @@ public class Event extends AppCompatActivity {
     int month;
     int dayOfMonth;
     Calendar calendar;
+
+    private ScrollView scrollView;
+    private CardView cardView;
+    private RelativeLayout root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +84,11 @@ public class Event extends AppCompatActivity {
 
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
+
+        scrollView = findViewById(R.id.scroll);
+        root = findViewById(R.id.root);
+        cardView = findViewById(R.id.cv_marker);
+
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +119,7 @@ public class Event extends AppCompatActivity {
                     editText_enddate.setError("Value Required.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();
@@ -158,6 +173,20 @@ public class Event extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+        //down button
+        cardView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                button.isShown();
+
+
+            }
+        });
+
+        root.setOnTouchListener(this);
 
     }
 
@@ -326,6 +355,40 @@ public class Event extends AppCompatActivity {
 
         return hasImage;
     }
+    // scroll down
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
 
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
+    }
+    private void isInBound(){
+        Rect scrollBounds = new Rect();
+        scrollView.getHitRect(scrollBounds);
+        if (button.getLocalVisibleRect(scrollBounds)) {
+
+            cardView.setVisibility(View.GONE);
+        } else {
+
+            cardView.setVisibility(View.VISIBLE);
+        }
+    }
 
 }

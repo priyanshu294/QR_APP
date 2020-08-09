@@ -11,7 +11,7 @@
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scannerView"
         android:layout_width="match_parent"
-        android:layout_height="356dp"
+        android:layout_height="350dp"
         app:frameAspectRatioHeight="1"
         app:frameAspectRatioWidth="1"
         app:frameColor="@android:color/white"
@@ -28,12 +28,12 @@
         android:layout_below="@+id/scannerView"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="7dp"
-        android:layout_marginTop="-20dp"
+        android:layout_marginTop="-10dp"
         android:layout_marginRight="7dp"
         android:layout_marginBottom="23dp"
         android:text="Result"
         android:textAlignment="center"
-        android:textColor="#FFEE58"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
 

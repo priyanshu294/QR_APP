@@ -77,7 +77,7 @@ public class Phone extends AppCompatActivity {
                     editText.setError("Enter Valid Phone Number.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.PHONE, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.PHONE, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();

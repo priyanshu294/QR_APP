@@ -2,11 +2,14 @@ package com.example.qrapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MotionEventCompat;
 
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -17,10 +20,13 @@ import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.hbb20.CountryCodePicker;
@@ -37,12 +43,16 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Contact_info extends AppCompatActivity {
+public class Contact_info extends AppCompatActivity implements View.OnTouchListener {
 
     private static final String TAG = "Contact_info Class";
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
+
+    private ScrollView scrollView;
+    private CardView cardView;
+    private RelativeLayout root;
 
     EditText editText_first_name,editText_last_name,editText_org,editText_email,editText_phone,editText_address,editText_city,editText_state,editText_contry,editText_pincode,editText_url;
     ImageView imageView;
@@ -70,6 +80,11 @@ public class Contact_info extends AppCompatActivity {
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
         ccp = findViewById(R.id.ccp);
+
+        scrollView = findViewById(R.id.scroll);
+        root = findViewById(R.id.root);
+        cardView = findViewById(R.id.cv_marker);
+
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -125,7 +140,7 @@ public class Contact_info extends AppCompatActivity {
                     editText_pincode.setError("Enter Only 6 Digit Number.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();
@@ -143,6 +158,20 @@ public class Contact_info extends AppCompatActivity {
 
             }
         });
+
+        //down button
+        cardView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                button.isShown();
+
+
+            }
+        });
+
+        root.setOnTouchListener(this);
 
     }
 
@@ -319,4 +348,39 @@ public class Contact_info extends AppCompatActivity {
     }
 
 
+    // scroll down
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
+    }
+    private void isInBound(){
+        Rect scrollBounds = new Rect();
+        scrollView.getHitRect(scrollBounds);
+        if (button.getLocalVisibleRect(scrollBounds)) {
+
+            cardView.setVisibility(View.GONE);
+        } else {
+
+            cardView.setVisibility(View.VISIBLE);
+        }
+    }
 }
