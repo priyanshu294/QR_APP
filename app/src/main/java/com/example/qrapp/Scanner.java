@@ -214,6 +214,5 @@ public class Scanner extends AppCompatActivity {
 
 
 
-
 }
 

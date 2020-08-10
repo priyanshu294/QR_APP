@@ -7,30 +7,41 @@
     android:background="@color/cardview_dark_background"
     tools:context=".Scanner">
 
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <com.budiyev.android.codescanner.CodeScannerView
+        <RelativeLayout
+            android:id="@+id/root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scannerView"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="270dp"
         app:frameAspectRatioHeight="1"
         app:frameAspectRatioWidth="1"
         app:frameColor="@android:color/white"
-        app:frameCornersRadius="0dp"
-        app:frameCornersSize="50dp"
+        app:frameCornersRadius="10dp"
+        app:frameCornersSize="40dp"
         app:frameSize="0.75"
         app:frameThickness="2dp" />
 
     <TextView
         android:id="@+id/resultsOfQr"
-        android:layout_width="404dp"
-        android:layout_height="315dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/pick_up"
         android:layout_below="@+id/scannerView"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="7dp"
-        android:layout_marginTop="-10dp"
+        android:layout_marginTop="0dp"
         android:layout_marginRight="7dp"
-        android:layout_marginBottom="23dp"
+        android:layout_marginBottom="20dp"
         android:text="Result"
         android:textAlignment="center"
         android:textColor="@android:color/white"
@@ -40,14 +51,17 @@
     <Button
         android:id="@+id/pick_up"
         android:layout_width="250dp"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="Take QR code from Storage"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/edit_button"
         android:textColor="#FFFFFF"
-        android:textSize="17sp"
-        />
+        android:textSize="17sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
