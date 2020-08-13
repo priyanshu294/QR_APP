@@ -2,14 +2,26 @@ package com.example.qrapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MotionEventCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,36 +29,51 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Locale;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class GeoLocation extends AppCompatActivity {
+public class GeoLocation extends AppCompatActivity implements View.OnTouchListener, LocationListener {
 
     private static final String TAG = "GeoLocation Class";
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
 
+    private ScrollView scrollView;
+    private CardView cardView;
+    private RelativeLayout root;
+
 
     EditText editText_lat,editText_long;
-    ImageView imageView;
-    Button button;
+    ImageView imageView , currentImg;
+    Button button ,cur_location;
+    TextView text_location;
+
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +87,25 @@ public class GeoLocation extends AppCompatActivity {
         imageView  = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
 
+        scrollView = findViewById(R.id.scroll);
+        root = findViewById(R.id.root);
+        cardView = findViewById(R.id.cv_marker);
+
+        currentImg = findViewById(R.id.cur_location);
+        text_location = findViewById(R.id.text_location);
+        cur_location = findViewById(R.id.location_btn);
+
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
                 String data =  "geo: "+ (editText_lat.getText().toString()) +"," + (editText_long.getText().toString());
+               // String data1 = "Location: " + text_location.getText().toString();
 
                 String data_lat = editText_lat.getText().toString() ;
                 String data_long = editText_long.getText().toString() ;
+               // String daat_text = text_location.getText().toString();
 
                 if (data_lat.trim().isEmpty()) {
                     editText_lat.setError("Value Required.");
@@ -94,6 +131,43 @@ public class GeoLocation extends AppCompatActivity {
 
             }
         });
+
+        //down button
+        cardView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                button.isShown();
+
+
+            }
+        });
+
+        root.setOnTouchListener(this);
+
+
+
+        cur_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestForLocation();
+                getLocation();
+            }
+        });
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+
+        try {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,500,5,GeoLocation.this);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     // Action bar button
@@ -258,4 +332,99 @@ public class GeoLocation extends AppCompatActivity {
         return hasImage;
     }
 
+    // scroll down
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+                isInBound();
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
+    }
+    private void isInBound(){
+        Rect scrollBounds = new Rect();
+        scrollView.getHitRect(scrollBounds);
+        if (button.getLocalVisibleRect(scrollBounds)) {
+
+            cardView.setVisibility(View.GONE);
+        } else {
+
+            cardView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Toast.makeText(this, ""+location.getLatitude()+","+location.getLongitude(), Toast.LENGTH_SHORT).show();
+        try {
+            Geocoder geocoder = new Geocoder(GeoLocation.this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+            String address = addresses.get(0).getAddressLine(0);
+
+            text_location.setText(address);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    //Runtime permission for location
+    public void requestForLocation() {
+        Dexter.withActivity(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
+            @Override
+            public void onPermissionGranted(PermissionGrantedResponse response) {
+                if(ContextCompat.checkSelfPermission(GeoLocation.this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(GeoLocation.this,new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },100);
+                }
+
+            }
+
+            @Override
+            public void onPermissionDenied(PermissionDeniedResponse response) {
+                Toast.makeText(GeoLocation.this, "Required Location Permission.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                token.continuePermissionRequest();
+
+            }
+        }).check();
+    }
 }
