@@ -38,7 +38,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Wifi extends AppCompatActivity {
+public class Wifi extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "Wifi Class";
     // variable name changed .
@@ -46,8 +46,8 @@ public class Wifi extends AppCompatActivity {
     boolean isQRGenerated = false;
 
 
-    EditText editText_ssid,editText_pass;
-    ImageView imageView,imageView_icon;
+    EditText editText_ssid, editText_pass;
+    ImageView imageView, imageView_icon;
     Button button;
 
     @Override
@@ -63,68 +63,11 @@ public class Wifi extends AppCompatActivity {
         imageView = findViewById(R.id.qrcode_image);
         imageView_icon = findViewById(R.id.show_pass_btn);
 
+        // create qr code btn
+        button.setOnClickListener(this);
+        // hide show pass img
+        imageView_icon.setOnClickListener(this);
 
-
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String data =  "ssid: "+(editText_ssid.getText().toString()) +"\n pass: " + (editText_pass.getText().toString());
-
-                String data_ssid = editText_ssid.getText().toString() ;
-                String data_pass = editText_pass.getText().toString() ;
-
-                if (data_ssid.trim().isEmpty()) {
-                    editText_ssid.setError("Value Required.");
-                }else if(data_pass.trim().isEmpty()){
-                    editText_pass.setError("Value Required.");
-                } else if(editText_pass.length()<6){
-                    editText_pass.setError("Please Enter Minimum 6 Char.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
-
-        imageView_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(v.getId()==R.id.show_pass_btn){
-
-                    if(editText_pass.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
-                        imageView_icon.setImageResource(R.drawable.hide_password);
-
-                        //Show Password
-                        editText_pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    }
-                    else{
-                        imageView_icon.setImageResource(R.drawable.show_password);
-
-                        //Hide Password
-                        editText_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
-
-                    }
-                }
-
-            }
-        });
 
     }
 
@@ -157,9 +100,9 @@ public class Wifi extends AppCompatActivity {
                 break;
 
             case R.id.share:
-                if(!isQRGenerated){
+                if (!isQRGenerated) {
                     Toast.makeText(this, "Please Create QR Code.!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     shareImage();
                 }
                 break;
@@ -180,7 +123,7 @@ public class Wifi extends AppCompatActivity {
             editText_ssid.getText().clear();
             editText_pass.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
-            imageView.setBackgroundColor(Color.rgb(128,128,128));
+            imageView.setBackgroundColor(Color.rgb(128, 128, 128));
             isQRGenerated = false;
         }
     }
@@ -188,7 +131,6 @@ public class Wifi extends AppCompatActivity {
 
     private void shareImage() {
         // share using File Provider
-
 
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -216,7 +158,7 @@ public class Wifi extends AppCompatActivity {
     }
 
 
-    private void saveToGallery () {
+    private void saveToGallery() {
         // checking for imageview is empty or not.
 
         if (!isQRGenerated) {
@@ -247,7 +189,8 @@ public class Wifi extends AppCompatActivity {
 
     }
 
-    private boolean checkpermission () {
+    // permission for storage
+    private boolean checkpermission() {
         // checkpermission returns boolean value.
 
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -279,7 +222,7 @@ public class Wifi extends AppCompatActivity {
 
     // used to confirm if imageview is empty or not
     // BUT in this case its never empty as you have made its background grey  .
-    private boolean hasImage (@NonNull ImageView view){
+    private boolean hasImage(@NonNull ImageView view) {
         Drawable drawable = view.getDrawable();
         boolean hasImage = (drawable != null);
 
@@ -288,5 +231,56 @@ public class Wifi extends AppCompatActivity {
         }
 
         return hasImage;
+    }
+
+    @Override
+    public void onClick(View v) {
+        //create qr code btn
+        if (v == button) {
+            String data = "ssid: " + (editText_ssid.getText().toString()) + "\n pass: " + (editText_pass.getText().toString());
+
+            String data_ssid = editText_ssid.getText().toString();
+            String data_pass = editText_pass.getText().toString();
+
+            if (data_ssid.trim().isEmpty()) {
+                editText_ssid.setError("Value Required.");
+            } else if (data_pass.trim().isEmpty()) {
+                editText_pass.setError("Value Required.");
+            } else if (editText_pass.length() < 6) {
+                editText_pass.setError("Please Enter Minimum 6 Char.");
+            } else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // hide show pass img
+        if (v == imageView_icon) {
+            if (v.getId() == R.id.show_pass_btn) {
+
+                if (editText_pass.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                    imageView_icon.setImageResource(R.drawable.hide_password);
+
+                    //Show Password
+                    editText_pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    imageView_icon.setImageResource(R.drawable.show_password);
+
+                    //Hide Password
+                    editText_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                }
+            }
+
+        }
     }
 }

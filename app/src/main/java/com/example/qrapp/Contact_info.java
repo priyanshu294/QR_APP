@@ -9,6 +9,7 @@ import androidx.core.view.MotionEventCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,20 +44,18 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Contact_info extends AppCompatActivity implements View.OnTouchListener {
+public class Contact_info extends AppCompatActivity implements View.OnTouchListener,View.OnClickListener {
 
     private static final String TAG = "Contact_info Class";
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
-
-    private ScrollView scrollView;
-    private CardView cardView;
-    private RelativeLayout root;
-
     EditText editText_first_name,editText_last_name,editText_org,editText_email,editText_phone,editText_address,editText_city,editText_state,editText_contry,editText_pincode,editText_url;
     ImageView imageView;
     Button button;
+    private ScrollView scrollView;
+    private CardView cardView;
+    private RelativeLayout root;
     private CountryCodePicker ccp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,98 +84,18 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
         root = findViewById(R.id.root);
         cardView = findViewById(R.id.cv_marker);
 
-
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String data = (editText_first_name.getText().toString())+" "+ (editText_last_name.getText().toString())+"\n"+ (editText_org.getText().toString())+"\n"+(editText_email.getText().toString())+"\n"+(editText_phone.getText().toString())+"\n"+(editText_address.getText().toString())+","+(editText_city.getText().toString())+","+(editText_state.getText().toString())+","+(editText_contry.getText().toString())+"-"+(editText_pincode.getText().toString())+"\n"+(editText_url.getText().toString());
-
-                String data_first = editText_first_name.getText().toString() ;
-                String data_last = editText_last_name.getText().toString() ;
-                String data_org = editText_org.getText().toString() ;
-                String data_email = editText_email.getText().toString() ;
-                String data_phone = editText_phone.getText().toString() ;
-                String data_address = editText_address.getText().toString() ;
-                String data_city = editText_city.getText().toString() ;
-                String data_state = editText_state.getText().toString() ;
-                String data_country = editText_contry.getText().toString() ;
-                String data_pincode = editText_pincode.getText().toString() ;
-                String data_url = editText_url.getText().toString() ;
-
-                if (data_first.trim().isEmpty()) {
-                    editText_first_name.setError("Value Required.");
-                } else if(data_last.trim().isEmpty()){
-                    editText_last_name.setError("Value Required.");
-                }else if (data_org.trim().isEmpty()){
-                    editText_org.setError("Value Required.");
-                }else if(data_email.trim().isEmpty()){
-                    editText_email.setError("Value Required.");
-                } else if(data_phone.trim().isEmpty()){
-                    editText_phone.setError("Value Required.");
-                }else if(data_address.trim().isEmpty()){
-                    editText_address.setError("Value Required.");
-                }else if(data_city.trim().isEmpty()){
-                    editText_city.setError("Value Required.");
-                }else  if(data_state.trim().isEmpty()){
-                    editText_state.setError("Value Required.");
-                }else if(data_country.trim().isEmpty()){
-                    editText_contry.setError("Value Required.");
-                } else if(data_pincode.trim().isEmpty()){
-                    editText_pincode.setError("Value Required.");
-                }else if(data_url.trim().isEmpty()){
-                    editText_url.setError("Value Required.");
-                } else if(!editText_first_name.getText().toString().matches("[a-z,A-Z]*")){
-                    editText_first_name.setError("Enter Only Character.");
-                } else if(!editText_last_name.getText().toString().matches("[a-z,A-Z]*")){
-                    editText_last_name.setError("Enter Only Character.");
-                }  else if(!Patterns.EMAIL_ADDRESS.matcher(editText_email.getText().toString()).matches()){
-                    editText_email.setError("Please Enter Valid Email.");
-                } else if(editText_phone.length()<4 || editText_phone.length()>12){
-                    editText_phone.setError("Enter Valid Phone Number.");
-                }
-                else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
-                    editText_pincode.setError("Enter Only 6 Digit Number.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
+        //create qr code btn
+        button.setOnClickListener(this);
 
         //down button
-        cardView.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(this);
 
-            @Override
-            public void onClick(View v) {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                button.isShown();
-
-
-            }
-        });
 
         root.setOnTouchListener(this);
 
     }
 
     // Action bar button
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -238,6 +157,7 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
             editText_pincode.getText().clear();
             editText_url.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
+            imageView.setBackgroundColor(Color.rgb(128,128,128));
             isQRGenerated = false;
         }
     }
@@ -245,7 +165,6 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
 
     private void shareImage() {
         // share using File Provider
-
 
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -303,7 +222,7 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
         }
 
     }
-
+// permission for storage
     private boolean checkpermission () {
         // checkpermission returns boolean value.
 
@@ -348,7 +267,7 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    // scroll down
+    // scroll down code
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = MotionEventCompat.getActionMasked(event);
@@ -382,5 +301,82 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
 
             cardView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        //create qr code btn
+        if(v == button){
+            String data = (editText_first_name.getText().toString())+" "+ (editText_last_name.getText().toString())+"\n"+ (editText_org.getText().toString())+"\n"+(editText_email.getText().toString())+"\n"+(editText_phone.getText().toString())+"\n"+(editText_address.getText().toString())+","+(editText_city.getText().toString())+","+(editText_state.getText().toString())+","+(editText_contry.getText().toString())+"-"+(editText_pincode.getText().toString())+"\n"+(editText_url.getText().toString());
+
+            String data_first = editText_first_name.getText().toString() ;
+            String data_last = editText_last_name.getText().toString() ;
+            String data_org = editText_org.getText().toString() ;
+            String data_email = editText_email.getText().toString() ;
+            String data_phone = editText_phone.getText().toString() ;
+            String data_address = editText_address.getText().toString() ;
+            String data_city = editText_city.getText().toString() ;
+            String data_state = editText_state.getText().toString() ;
+            String data_country = editText_contry.getText().toString() ;
+            String data_pincode = editText_pincode.getText().toString() ;
+            String data_url = editText_url.getText().toString() ;
+
+            if (data_first.trim().isEmpty()) {
+                editText_first_name.setError("Value Required.");
+            } else if(data_last.trim().isEmpty()){
+                editText_last_name.setError("Value Required.");
+            }else if (data_org.trim().isEmpty()){
+                editText_org.setError("Value Required.");
+            }else if(data_email.trim().isEmpty()){
+                editText_email.setError("Value Required.");
+            } else if(data_phone.trim().isEmpty()){
+                editText_phone.setError("Value Required.");
+            }else if(data_address.trim().isEmpty()){
+                editText_address.setError("Value Required.");
+            }else if(data_city.trim().isEmpty()){
+                editText_city.setError("Value Required.");
+            }else  if(data_state.trim().isEmpty()){
+                editText_state.setError("Value Required.");
+            }else if(data_country.trim().isEmpty()){
+                editText_contry.setError("Value Required.");
+            } else if(data_pincode.trim().isEmpty()){
+                editText_pincode.setError("Value Required.");
+            }else if(data_url.trim().isEmpty()){
+                editText_url.setError("Value Required.");
+            } else if(!editText_first_name.getText().toString().matches("[a-z,A-Z]*")){
+                editText_first_name.setError("Enter Only Character.");
+            } else if(!editText_last_name.getText().toString().matches("[a-z,A-Z]*")){
+                editText_last_name.setError("Enter Only Character.");
+            }  else if(!Patterns.EMAIL_ADDRESS.matcher(editText_email.getText().toString()).matches()){
+                editText_email.setError("Please Enter Valid Email.");
+            } else if(editText_phone.length()<4 || editText_phone.length()>12){
+                editText_phone.setError("Enter Valid Phone Number.");
+            }
+            else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
+                editText_pincode.setError("Enter Only 6 Digit Number.");
+            }
+            else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // dwon btn
+        if(v == cardView){
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            button.isShown();
+
+        }
+
+
     }
 }

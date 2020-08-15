@@ -37,7 +37,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class SMS extends AppCompatActivity {
+public class SMS extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SMS Class";
     // variable name changed .
@@ -63,43 +63,9 @@ public class SMS extends AppCompatActivity {
         button = findViewById(R.id.creare_btn);
         ccp = findViewById(R.id.ccp);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        // crreate qr code btn
+        button.setOnClickListener(this);
 
-            @Override
-            public void onClick(View v) {
-
-                String data =  "Phone: " + (editText_num.getText().toString()) + "\n message: "+ (editText_mes.getText().toString());
-
-                String data_phone = editText_num.getText().toString() ;
-                String data_mess = editText_mes.getText().toString() ;
-
-                if (data_phone.trim().isEmpty()) {
-                    editText_num.setError("Value Required.");
-                } else if(data_mess.trim().isEmpty()){
-                    editText_mes.setError("Value Required.");
-                } else if(editText_num.length()<4 || editText_num.length()>12){
-
-                    editText_num.setError("Enter Valid Phone Number.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
 
     }
 
@@ -164,7 +130,6 @@ public class SMS extends AppCompatActivity {
     private void shareImage() {
         // share using File Provider
 
-
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
@@ -221,7 +186,7 @@ public class SMS extends AppCompatActivity {
         }
 
     }
-
+    // permission for storage
     private boolean checkpermission () {
         // checkpermission returns boolean value.
 
@@ -265,4 +230,37 @@ public class SMS extends AppCompatActivity {
         return hasImage;
     }
 
+    @Override
+    public void onClick(View v) {
+        // create code btn
+        if(v == button){
+            String data =  "Phone: " + (editText_num.getText().toString()) + "\n message: "+ (editText_mes.getText().toString());
+
+            String data_phone = editText_num.getText().toString() ;
+            String data_mess = editText_mes.getText().toString() ;
+
+            if (data_phone.trim().isEmpty()) {
+                editText_num.setError("Value Required.");
+            } else if(data_mess.trim().isEmpty()){
+                editText_mes.setError("Value Required.");
+            } else if(editText_num.length()<4 || editText_num.length()>12){
+
+                editText_num.setError("Enter Valid Phone Number.");
+            }
+            else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

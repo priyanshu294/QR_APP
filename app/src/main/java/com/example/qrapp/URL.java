@@ -36,7 +36,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class URL extends AppCompatActivity {
+public class URL extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "URL Class";
     // variable name changed .
@@ -58,35 +58,10 @@ public class URL extends AppCompatActivity {
         imageView = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
 
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String data =   editText.getText().toString();
-                if (data.isEmpty()) {
-                    editText.setError("Value Required.");
-
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
+        // create qr code btn
+        button.setOnClickListener(this);
 
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
     }
 
     // Action bar button
@@ -118,9 +93,9 @@ public class URL extends AppCompatActivity {
                 break;
 
             case R.id.share:
-                if(!isQRGenerated){
+                if (!isQRGenerated) {
                     Toast.makeText(this, "Please Create QR Code.!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     shareImage();
                 }
                 break;
@@ -140,7 +115,7 @@ public class URL extends AppCompatActivity {
             imageView.setImageDrawable(null);
             editText.getText().clear();
             Toast.makeText(this, "Delete QR Code", Toast.LENGTH_SHORT).show();
-            imageView.setBackgroundColor(Color.rgb(128,128,128));
+            imageView.setBackgroundColor(Color.rgb(128, 128, 128));
             isQRGenerated = false;
         }
     }
@@ -148,7 +123,6 @@ public class URL extends AppCompatActivity {
 
     private void shareImage() {
         // share using File Provider
-
 
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -176,7 +150,7 @@ public class URL extends AppCompatActivity {
     }
 
 
-    private void saveToGallery () {
+    private void saveToGallery() {
         // checking for imageview is empty or not.
 
         if (!isQRGenerated) {
@@ -207,7 +181,8 @@ public class URL extends AppCompatActivity {
 
     }
 
-    private boolean checkpermission () {
+    // permission for storage
+    private boolean checkpermission() {
         // checkpermission returns boolean value.
 
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -239,7 +214,7 @@ public class URL extends AppCompatActivity {
 
     // used to confirm if imageview is empty or not
     // BUT in this case its never empty as you have made its background grey  .
-    private boolean hasImage (@NonNull ImageView view){
+    private boolean hasImage(@NonNull ImageView view) {
         Drawable drawable = view.getDrawable();
         boolean hasImage = (drawable != null);
 
@@ -250,4 +225,31 @@ public class URL extends AppCompatActivity {
         return hasImage;
     }
 
+    @Override
+    public void onClick(View v) {
+        // create qr code btn
+        if (v == button) {
+            String data = editText.getText().toString();
+            if (data.isEmpty()) {
+                editText.setError("Value Required.");
+
+            } else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+
+    }
 }

@@ -70,7 +70,7 @@
             <ImageView
                 android:id="@+id/show_pass_btn"
                 android:layout_width="45dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_below="@+id/ssid_input"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -82,7 +82,6 @@
 
         </RelativeLayout>
     </ScrollView>
-
 
 
 </RelativeLayout>

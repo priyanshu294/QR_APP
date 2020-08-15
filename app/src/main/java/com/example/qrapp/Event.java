@@ -48,7 +48,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Event extends AppCompatActivity implements View.OnTouchListener{
+public class Event extends AppCompatActivity implements View.OnTouchListener ,  View.OnClickListener{
 
     private static final String TAG = "Event Class";
     // variable name changed .
@@ -90,101 +90,15 @@ public class Event extends AppCompatActivity implements View.OnTouchListener{
         cardView = findViewById(R.id.cv_marker);
 
 
+        // create qr code btn
+        button.setOnClickListener(this);
+        // start date btn
+        editText_startdate.setOnClickListener(this);
+        // end date btn
+        editText_enddate.setOnClickListener(this);
+        //down button btn
+        cardView.setOnClickListener(this);
 
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String data =  "title: "+(editText_title.getText().toString()) +"\n des: " + (editText_description.getText().toString())+"\n place:"+(editText_location.getText().toString())+"\n organizer:"+(editText_organizer.getText().toString())+"\n start:"+(editText_startdate.getText().toString())+" - "+(editText_enddate.getText().toString());
-
-                String data_title = editText_title.getText().toString() ;
-                String data_desc = editText_description.getText().toString() ;
-                String data_loc = editText_location.getText().toString() ;
-                String data_organ = editText_organizer.getText().toString() ;
-                String data_statdate = editText_startdate.getText().toString() ;
-                String data_enddata = editText_enddate.getText().toString() ;
-
-                if (data_title.trim().isEmpty()) {
-                    editText_title.setError("Value Required.");
-                }else  if(data_desc.trim().isEmpty()){
-                    editText_description.setError("Value Required.");
-                }else if(data_loc.trim().isEmpty()){
-                    editText_location.setError("Value Required.");
-                }else if(data_organ.trim().isEmpty()){
-                    editText_organizer.setError("Value Required.");
-                }else if(data_statdate.trim().isEmpty()){
-                    editText_startdate.setError("Value Required.");
-                }else if(data_enddata.trim().isEmpty()){
-                    editText_enddate.setError("Value Required.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-
-        editText_startdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(Event.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                editText_startdate.setText(day + "/" + (month + 1) + "/" + year);
-                            }
-                        }, year, month, dayOfMonth);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            }
-        });
-
-        editText_enddate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(Event.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                editText_enddate.setText(day + "/" + (month + 1) + "/" + year);
-                            }
-                        }, year, month, dayOfMonth);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            }
-        });
-
-        //down button
-        cardView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                button.isShown();
-
-
-            }
-        });
 
         root.setOnTouchListener(this);
 
@@ -255,7 +169,6 @@ public class Event extends AppCompatActivity implements View.OnTouchListener{
     private void shareImage() {
         // share using File Provider
 
-
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
@@ -312,7 +225,7 @@ public class Event extends AppCompatActivity implements View.OnTouchListener{
         }
 
     }
-
+    // permission for storage
     private boolean checkpermission () {
         // checkpermission returns boolean value.
 
@@ -355,7 +268,7 @@ public class Event extends AppCompatActivity implements View.OnTouchListener{
 
         return hasImage;
     }
-    // scroll down
+    // scroll down code
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = MotionEventCompat.getActionMasked(event);
@@ -391,4 +304,83 @@ public class Event extends AppCompatActivity implements View.OnTouchListener{
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        // create qr code btn
+        if(v == button) {
+            String data = "title: " + (editText_title.getText().toString()) + "\n des: " + (editText_description.getText().toString()) + "\n place:" + (editText_location.getText().toString()) + "\n organizer:" + (editText_organizer.getText().toString()) + "\n start:" + (editText_startdate.getText().toString()) + " - " + (editText_enddate.getText().toString());
+
+            String data_title = editText_title.getText().toString();
+            String data_desc = editText_description.getText().toString();
+            String data_loc = editText_location.getText().toString();
+            String data_organ = editText_organizer.getText().toString();
+            String data_statdate = editText_startdate.getText().toString();
+            String data_enddata = editText_enddate.getText().toString();
+
+            if (data_title.trim().isEmpty()) {
+                editText_title.setError("Value Required.");
+            } else if (data_desc.trim().isEmpty()) {
+                editText_description.setError("Value Required.");
+            } else if (data_loc.trim().isEmpty()) {
+                editText_location.setError("Value Required.");
+            } else if (data_organ.trim().isEmpty()) {
+                editText_organizer.setError("Value Required.");
+            } else if (data_statdate.trim().isEmpty()) {
+                editText_startdate.setError("Value Required.");
+            } else if (data_enddata.trim().isEmpty()) {
+                editText_enddate.setError("Value Required.");
+            } else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+            // start date btn
+            if(v == editText_startdate){
+                calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(Event.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                editText_startdate.setText(day + "/" + (month + 1) + "/" + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            }
+            // end date btn
+        if(v == editText_enddate){
+            calendar = Calendar.getInstance();
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            datePickerDialog = new DatePickerDialog(Event.this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            editText_enddate.setText(day + "/" + (month + 1) + "/" + year);
+                        }
+                    }, year, month, dayOfMonth);
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        }
+        // down btn
+        if(v == cardView){
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            button.isShown();
+        }
+
+    }
 }

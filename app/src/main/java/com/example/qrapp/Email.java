@@ -68,15 +68,12 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
-
-   private ScrollView scrollView;
-   private  CardView cardView;
-    private RelativeLayout root;
-
     Button button;
     ImageView imageView;
     EditText editText_add, editText_sub, editText_mes;
-
+   private ScrollView scrollView;
+   private  CardView cardView;
+    private RelativeLayout root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,21 +94,11 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
 
 
         // onCLick() is called at last to make code look cleaner , please use this way from future.
+        // create qr code btn
         button.setOnClickListener(this);
 
-
-
         //down button
-        cardView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                button.isShown();
-
-
-            }
-        });
+        cardView.setOnClickListener(this);
 
         root.setOnTouchListener(this);
 
@@ -237,7 +224,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
             }
 
         }
-
+        //permission for location
         private boolean checkpermission () {
             // checkpermission returns boolean value.
 
@@ -281,6 +268,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
             return hasImage;
         }
 
+        //btn code
         @Override
         public void onClick (View view){
             if (view == button) {
@@ -314,10 +302,17 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
                     }
                 }
             }
+            // down btn
+            if(view == cardView){
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                button.isShown();
+
+
+            }
 
         }
 
-        // scroll down
+        // scroll down code
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = MotionEventCompat.getActionMasked(event);

@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Phone extends AppCompatActivity {
+public class Phone extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "Phone Class";
     // variable name changed .
@@ -64,39 +64,9 @@ public class Phone extends AppCompatActivity {
         button = findViewById(R.id.creare_btn);
         ccp = findViewById(R.id.ccp);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        // create code btn
+        button.setOnClickListener(this);
 
-            @Override
-            public void onClick(View v) {
-
-                String data =   editText.getText().toString();
-                if (data.isEmpty()) {
-                    editText.setError("Value Required.");
-                } else if(editText.length()<4 || editText.length()>12){
-
-                    editText.setError("Enter Valid Phone Number.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.PHONE, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-
-
-        });
     }
 
     // Action bar button
@@ -159,7 +129,6 @@ public class Phone extends AppCompatActivity {
     private void shareImage() {
         // share using File Provider
 
-
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
@@ -216,7 +185,7 @@ public class Phone extends AppCompatActivity {
         }
 
     }
-
+        //permission for storage
     private boolean checkpermission () {
         // checkpermission returns boolean value.
 
@@ -260,4 +229,33 @@ public class Phone extends AppCompatActivity {
         return hasImage;
     }
 
+    @Override
+    public void onClick(View v) {
+        // create qr code btn
+        if(v == button){
+            String data =   editText.getText().toString();
+            if (data.isEmpty()) {
+                editText.setError("Value Required.");
+            } else if(editText.length()<4 || editText.length()>12){
+
+                editText.setError("Enter Valid Phone Number.");
+            }
+            else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.PHONE, 300);
+
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
+
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
 }

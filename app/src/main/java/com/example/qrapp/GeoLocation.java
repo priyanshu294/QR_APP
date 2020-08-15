@@ -23,6 +23,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -56,24 +57,23 @@ import java.util.Locale;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class GeoLocation extends AppCompatActivity implements View.OnTouchListener, LocationListener {
+public class GeoLocation extends AppCompatActivity implements View.OnClickListener,  MyLocationListener.MyLocListener{
 
     private static final String TAG = "GeoLocation Class";
+    private static final int PERMISSION_CODE = 101;
     // variable name changed .
     boolean mPermission = false;
     boolean isQRGenerated = false;
-
-    private ScrollView scrollView;
-    private CardView cardView;
-    private RelativeLayout root;
+    String[] permissions_all=
+            {Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION};
 
 
     EditText editText_lat,editText_long;
     ImageView imageView , currentImg;
     Button button ,cur_location;
-    TextView text_location;
 
-    LocationManager locationManager;
+    private MyLocationListener mMyLocationListener ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,88 +87,64 @@ public class GeoLocation extends AppCompatActivity implements View.OnTouchListen
         imageView  = findViewById(R.id.qrcode_image);
         button = findViewById(R.id.creare_btn);
 
-        scrollView = findViewById(R.id.scroll);
-        root = findViewById(R.id.root);
-        cardView = findViewById(R.id.cv_marker);
-
         currentImg = findViewById(R.id.cur_location);
-        text_location = findViewById(R.id.text_location);
         cur_location = findViewById(R.id.location_btn);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        mMyLocationListener = new MyLocationListener(this , this );
 
-            @Override
-            public void onClick(View v) {
-
-                String data =  "geo: "+ (editText_lat.getText().toString()) +"," + (editText_long.getText().toString());
-               // String data1 = "Location: " + text_location.getText().toString();
-
-                String data_lat = editText_lat.getText().toString() ;
-                String data_long = editText_long.getText().toString() ;
-               // String daat_text = text_location.getText().toString();
-
-                if (data_lat.trim().isEmpty()) {
-                    editText_lat.setError("Value Required.");
-                }else if(data_long.trim().isEmpty()){
-                    editText_long.setError("Value Required.");
-                }
-                else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
-
-                    try {
-                        Bitmap qrBits = qrgEncoder.getBitmap();
-
-                        imageView.setImageBitmap(qrBits);
-                        isQRGenerated = true;
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
-
-        //down button
-        cardView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                button.isShown();
-
-
-            }
-        });
-
-        root.setOnTouchListener(this);
-
-
-
-        cur_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestForLocation();
-                getLocation();
-            }
-        });
+        // create qr code btn
+        button.setOnClickListener(this);
+        //get current location btn
+        cur_location.setOnClickListener(this);
 
     }
 
-    @SuppressLint("MissingPermission")
+
+    // Get current location code
     private void getLocation() {
 
-        try {
-            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,500,5,GeoLocation.this);
-
-        }catch (Exception e){
-            e.printStackTrace();
+        if(Build.VERSION.SDK_INT>=23){
+            if(checkPermission()){
+                getLocationValues();
+            }
+            else{
+                requestPermission();
+            }
+        }
+        else{
+            getLocationValues();
         }
     }
+
+    private void getLocationValues() {
+        mMyLocationListener.getDeviceLocation();
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this,permissions_all,PERMISSION_CODE);
+    }
+
+    // permission for location
+    private boolean checkPermission() {
+        for(int i=0;i<permissions_all.length;i++){
+            int result= ContextCompat.checkSelfPermission(this,permissions_all[i]);
+            if(result== PackageManager.PERMISSION_GRANTED){
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void latLongVal(Double lat, Double lng) {
+
+        editText_lat.setText(lat.toString());
+        editText_long.setText(lng.toString());
+    }
+
 
     // Action bar button
     @Override
@@ -231,7 +207,6 @@ public class GeoLocation extends AppCompatActivity implements View.OnTouchListen
     private void shareImage() {
         // share using File Provider
 
-
         Drawable drawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
@@ -288,10 +263,9 @@ public class GeoLocation extends AppCompatActivity implements View.OnTouchListen
         }
 
     }
-
+    //permission for storage
     private boolean checkpermission () {
         // checkpermission returns boolean value.
-
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE};
         Dexter.withActivity(this)
@@ -332,99 +306,43 @@ public class GeoLocation extends AppCompatActivity implements View.OnTouchListen
         return hasImage;
     }
 
-    // scroll down
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+    public void onClick(View v) {
+        // create qr code btn
+        if(v==button) {
+            String data = "geo: " + (editText_lat.getText().toString()) + "," + (editText_long.getText().toString());
 
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
-                isInBound();
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-                isInBound();
-                return true;
-            case (MotionEvent.ACTION_UP) :
-                isInBound();
-                return true;
-            case (MotionEvent.ACTION_CANCEL) :
-                isInBound();
-                return true;
-            case (MotionEvent.ACTION_OUTSIDE) :
-                return true;
-            default :
-                return super.onTouchEvent(event);
-        }
-    }
-    private void isInBound(){
-        Rect scrollBounds = new Rect();
-        scrollView.getHitRect(scrollBounds);
-        if (button.getLocalVisibleRect(scrollBounds)) {
+            String data_lat = editText_lat.getText().toString();
+            String data_long = editText_long.getText().toString();
 
-            cardView.setVisibility(View.GONE);
-        } else {
+            if (data_lat.trim().isEmpty()) {
+                editText_lat.setError("Value Required.");
+            } else if (data_long.trim().isEmpty()) {
+                editText_long.setError("Value Required.");
+            } else if (!editText_lat.getText().toString().matches("^[+-]?\\d{0,9}\\.\\d{1,15}$")) {
+                editText_lat.setError("Enter Valid Value.");
+            } else if (!editText_long.getText().toString().matches("^[+-]?\\d{0,9}\\.\\d{1,15}$")) {
+                editText_long.setError("Enter Valid Value.");
+            } else {
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
 
-            cardView.setVisibility(View.VISIBLE);
-        }
-    }
+                try {
+                    Bitmap qrBits = qrgEncoder.getBitmap();
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-        Toast.makeText(this, ""+location.getLatitude()+","+location.getLongitude(), Toast.LENGTH_SHORT).show();
-        try {
-            Geocoder geocoder = new Geocoder(GeoLocation.this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-            String address = addresses.get(0).getAddressLine(0);
-
-            text_location.setText(address);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+                    imageView.setImageBitmap(qrBits);
+                    isQRGenerated = true;
 
 
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    //Runtime permission for location
-    public void requestForLocation() {
-        Dexter.withActivity(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
-            @Override
-            public void onPermissionGranted(PermissionGrantedResponse response) {
-                if(ContextCompat.checkSelfPermission(GeoLocation.this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(GeoLocation.this,new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    },100);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
             }
+        }
 
-            @Override
-            public void onPermissionDenied(PermissionDeniedResponse response) {
-                Toast.makeText(GeoLocation.this, "Required Location Permission.", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-
-            @Override
-            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                token.continuePermissionRequest();
-
-            }
-        }).check();
+        // get current location btn
+       else if(v == cur_location){
+            getLocation();
+        }
     }
+
 }
