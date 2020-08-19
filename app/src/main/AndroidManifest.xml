@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -16,49 +16,63 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GeoLocation"
-            android:parentActivityName=".Select_QR_Code"
+
+        <activity android:name=".Suggestion"
+            android:parentActivityName=".Scanner"/>
+
+        <activity
+            android:name=".GeoLocation"
             android:label="Location"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Event"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Event"
             android:label="Event"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Contact_info"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Contact_info"
             android:label="Contact"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Wifi"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Wifi"
             android:label="Wifi"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".URL"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".URL"
             android:label="URL"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".SMS"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".SMS"
             android:label="SMS"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Phone"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Phone"
             android:label="Phone"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Text"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Text"
             android:label="Text"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Email"
             android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Email"
             android:label="E-mail"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Select_QR_Code"
-            android:parentActivityName=".MainActivity"
-            android:label="Select QR Code"/>
+            android:parentActivityName=".Select_QR_Code"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Select_QR_Code"
+            android:label="Select QR Code"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".Scanner"
-            android:parentActivityName=".MainActivity"
-            android:label="Scan QR Code"/>
+            android:label="Scan QR Code"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,8 +90,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_path" />
         </provider>
-
-
     </application>
 
 </manifest>

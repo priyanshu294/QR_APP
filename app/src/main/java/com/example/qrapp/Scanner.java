@@ -40,7 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Scanner extends AppCompatActivity {
+public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
     CodeScanner codeScanner;
     CodeScannerView scannView;
@@ -50,8 +50,7 @@ public class Scanner extends AppCompatActivity {
 
     private static final int Gallery_REQUEST_CODE = 123;
 
-    public static final String TAG ="MainActivity";
-
+    public static final String TAG = "MainActivity";
 
 
     @Override
@@ -62,7 +61,7 @@ public class Scanner extends AppCompatActivity {
 
 
         scannView = findViewById(R.id.scannerView);
-        codeScanner = new CodeScanner(this,scannView);
+        codeScanner = new CodeScanner(this, scannView);
         resultData = findViewById(R.id.resultsOfQr);
         pick_up = findViewById(R.id.pick_up);
 
@@ -74,31 +73,22 @@ public class Scanner extends AppCompatActivity {
                     @Override
                     public void run() {
                         resultData.setText(result.getText());
+                        startActivity(new Intent(getApplicationContext(), Suggestion.class));
                     }
                 });
 
             }
         });
+        // scan qr code
+        scannView.setOnClickListener(this);
+        // pick photos from gallery
+        pick_up.setOnClickListener(this);
 
 
-        scannView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                codeScanner.startPreview();
-            }
-        });
 
-
-        pick_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-                onResume();
-
-            }
-
-        });
     }
+
+    // gallery take qr code image
     public void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -106,6 +96,7 @@ public class Scanner extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select QR code"), Gallery_REQUEST_CODE);
 
     }
+
     @Override
 
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -123,6 +114,7 @@ public class Scanner extends AppCompatActivity {
 
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
+
                 try {
 
                     Bitmap bMap = selectedImage;
@@ -130,17 +122,14 @@ public class Scanner extends AppCompatActivity {
                     String contents = null;
 
 
-
-                    int[] intArray = new int[bMap.getWidth()*bMap.getHeight()];
+                    int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
 
                     bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
-
 
 
                     LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
 
                     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-
 
 
                     Reader reader = new MultiFormatReader();
@@ -151,15 +140,15 @@ public class Scanner extends AppCompatActivity {
 
                     resultData.setText(contents);
 
-                    Log.d(TAG, "onActivityResult() CONTENT ="+contents);
+                    Log.d(TAG, "onActivityResult() CONTENT =" + contents);
 
-                    Toast.makeText(getApplicationContext(),contents,Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
 
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
-                    Log.d(TAG, "onActivityResult() ERROR "+e.getMessage());
+                    Log.d(TAG, "onActivityResult() ERROR " + e.getMessage());
 
                 }
 
@@ -167,21 +156,19 @@ public class Scanner extends AppCompatActivity {
 
             } catch (FileNotFoundException e) {
 
-                Log.d(TAG, "onActivityResult() ERROR "+e.getMessage());
+                Log.d(TAG, "onActivityResult() ERROR " + e.getMessage());
 
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
 
             }
 
-        }else {
+        } else {
 
-            Toast.makeText(this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
 
         }
 
     }
-
-
 
 
     @Override
@@ -190,6 +177,7 @@ public class Scanner extends AppCompatActivity {
         requestForCamera();
 
     }
+// permission for camera
 
     public void requestForCamera() {
         Dexter.withActivity(this).withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
@@ -210,6 +198,21 @@ public class Scanner extends AppCompatActivity {
 
             }
         }).check();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        // scan qr code
+        if (v == scannView) {
+            codeScanner.startPreview();
+        }
+        // pick photos from gallery
+        if (v == pick_up) {
+            chooseImage();
+            onResume();
+
+        }
     }
 
 
