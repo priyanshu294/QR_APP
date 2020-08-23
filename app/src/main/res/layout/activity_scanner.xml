@@ -22,7 +22,7 @@
         <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scannerView"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="match_parent"
         app:frameAspectRatioHeight="1"
         app:frameAspectRatioWidth="1"
         app:frameColor="@android:color/white"
@@ -31,22 +31,7 @@
         app:frameSize="0.75"
         app:frameThickness="2dp" />
 
-    <TextView
-        android:id="@+id/resultsOfQr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/pick_up"
-        android:layout_below="@+id/scannerView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginBottom="20dp"
-        android:text="Result"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+
 
     <Button
         android:id="@+id/pick_up"

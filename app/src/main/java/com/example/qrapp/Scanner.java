@@ -5,11 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +39,10 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,7 +50,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
     CodeScanner codeScanner;
     CodeScannerView scannView;
-    TextView resultData;
     Button pick_up;
 
 
@@ -62,7 +67,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
         scannView = findViewById(R.id.scannerView);
         codeScanner = new CodeScanner(this, scannView);
-        resultData = findViewById(R.id.resultsOfQr);
         pick_up = findViewById(R.id.pick_up);
 
         codeScanner.setDecodeCallback(new DecodeCallback() {
@@ -72,8 +76,11 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        resultData.setText(result.getText());
-                        startActivity(new Intent(getApplicationContext(), Suggestion.class));
+                    String text = (result.getText());
+                    Intent intent = new Intent(getApplicationContext(),Suggestion.class);
+                    intent.putExtra("MyResult", text);
+                    startActivity(intent);
+
                     }
                 });
 
@@ -95,6 +102,7 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select QR code"), Gallery_REQUEST_CODE);
 
+
     }
 
     @Override
@@ -104,7 +112,8 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         super.onActivityResult(reqCode, resultCode, data);
 
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && reqCode == 123) {
+
 
             try {
 
@@ -114,13 +123,11 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
-
                 try {
 
                     Bitmap bMap = selectedImage;
 
                     String contents = null;
-
 
                     int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
 
@@ -132,17 +139,23 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
                     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
 
+
                     Reader reader = new MultiFormatReader();
 
                     Result result = reader.decode(bitmap);
 
                     contents = result.getText();
 
-                    resultData.setText(contents);
+                    Intent intent = new Intent(getApplicationContext(),Suggestion.class);
+                    createImageFromBitmap(bMap);
+                    intent.putExtra("MyResult", contents);
+                    startActivity(intent);
+
+                  //  resultData.setText(contents);
 
                     Log.d(TAG, "onActivityResult() CONTENT =" + contents);
 
-                    Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
 
 
 
@@ -152,7 +165,7 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
                 }
 
-                //  image_view.setImageBitmap(selectedImage);
+
 
             } catch (FileNotFoundException e) {
 
@@ -162,12 +175,29 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
             }
 
+
         } else {
 
             Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
 
         }
 
+    }
+
+// store image bitmap
+    public String createImageFromBitmap(Bitmap bitmap) {
+        String fileName = "myImage";
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            FileOutputStream fo = openFileOutput(fileName, Context.MODE_PRIVATE);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fileName = null;
+        }
+        return fileName;
     }
 
 
@@ -210,7 +240,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         // pick photos from gallery
         if (v == pick_up) {
             chooseImage();
-            onResume();
 
         }
     }
