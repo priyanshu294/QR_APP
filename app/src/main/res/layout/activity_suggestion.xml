@@ -139,7 +139,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/edit_button"
                 android:layout_below="@+id/realtive1"
-                android:text="Send Email"
+                android:text=""
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
