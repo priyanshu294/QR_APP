@@ -136,7 +136,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
 // check for phone number
     public boolean isValidPhone(String phone) {
-        if (TextUtils.isEmpty(phone)) {
+        if (phone.trim().length() < 0) {
             return false;
         } else {
             return android.util.Patterns.PHONE.matcher(phone).matches();
@@ -144,7 +144,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     }
 // check for URL
     public boolean isValidURL(String potentialUrl) {
-        if (TextUtils.isEmpty(potentialUrl)) {
+        if (potentialUrl.trim().length() < 0) {
             return false;
         } else {
             return Patterns.WEB_URL.matcher(potentialUrl).matches();
@@ -164,8 +164,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 //  Give suggestion for different QR code
     private void IntentSuggestions() {
 
-        if (isValidEmail(content_txt.getText().toString())) {
-            sugg_button.setText("Send Email");
+        if (isValidPhone(content_txt.getText().toString())) {
+            sugg_button.setText("Call");
             sugg_button.setOnClickListener(this);
         }
         else {
@@ -212,7 +212,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if(v == sugg_button) {
-            EmailIntent(content_txt.getText().toString());
+           MakeCall();
 
         } else if(v == sugg_button){
             BrowserIntent();
