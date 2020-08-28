@@ -86,8 +86,6 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 // Give suggestion for different QR code
         IntentSuggestions();
 
-        sugg_button.setOnClickListener(this);
-
     }
 
 // calling suggestion or call Intent
@@ -166,6 +164,15 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 //  Give suggestion for different QR code
     private void IntentSuggestions() {
 
+        if (isValidPhone(content_txt.getText().toString())) {
+            sugg_button.setText("Call");
+            sugg_button.setOnClickListener(this);
+        }
+        else {
+           isValidURL(content_txt.getText().toString());
+            sugg_button.setText("Open in Browser");
+            sugg_button.setOnClickListener(this);
+        }
     }
 
 
@@ -205,15 +212,10 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if(v == sugg_button) {
-            if (isValidPhone(content_txt.getText().toString())) {
-                sugg_button.setText("Call");
-                MakeCall();
-            }  else {
-                isValidURL(content_txt.getText().toString());
-                sugg_button.setText("Open in Browser");
-                BrowserIntent();
-            }
+           MakeCall();
 
+        } else if(v == sugg_button){
+            BrowserIntent();
         }
     }
 }
