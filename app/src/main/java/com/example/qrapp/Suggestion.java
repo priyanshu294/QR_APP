@@ -12,7 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -86,7 +88,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     }
 
-// calling suggestion
+// calling suggestion or call Intent
     private void MakeCall() {
         String number = content_txt.getText().toString();
         if (number.trim().length() > 0) {
@@ -99,7 +101,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                         123);
             } else {
                 String dial = "tel:" + number;
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(dial));
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
                 startActivity(intent);
             }
         }
@@ -115,14 +117,64 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             }
         }
     }
+ // Intent for browser
+ private  void BrowserIntent(){
+     String url = content_txt.getText().toString();
+     Intent intent = new Intent(Intent.ACTION_VIEW);
+     intent.setData(Uri.parse(url));
+     startActivity(intent);
+ }
+// Intent for email
+    private  void EmailIntent(String addresses){
+        String url = content_txt.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"+ url));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        startActivity(intent);
+    }
+
+
+// check for phone number
+    public boolean isValidPhone(String phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+        }
+    }
+// check for URL
+    public boolean isValidURL(String potentialUrl) {
+        if (TextUtils.isEmpty(potentialUrl)) {
+            return false;
+        } else {
+            return Patterns.WEB_URL.matcher(potentialUrl).matches();
+        }
+    }
+// check for email
+    public boolean isValidEmail(String email) {
+        if (TextUtils.isEmpty(email)) {
+            return false;
+        } else {
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        }
+    }
+
+
+
 //  Give suggestion for different QR code
     private void IntentSuggestions() {
 
-        if (Linkify.addLinks(content_txt, Linkify.PHONE_NUMBERS)) {
-            sugg_button.setText("Call");
+        if (isValidEmail(content_txt.getText().toString())) {
+            sugg_button.setText("Send Email");
+            sugg_button.setOnClickListener(this);
+        }
+        else {
+           isValidURL(content_txt.getText().toString());
+            sugg_button.setText("Open in Browser");
             sugg_button.setOnClickListener(this);
         }
     }
+
 
 
     // Action bar button
@@ -159,6 +211,11 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 // For calling
     @Override
     public void onClick(View v) {
-        MakeCall();
+        if(v == sugg_button) {
+            EmailIntent(content_txt.getText().toString());
+
+        } else if(v == sugg_button){
+            BrowserIntent();
+        }
     }
 }
