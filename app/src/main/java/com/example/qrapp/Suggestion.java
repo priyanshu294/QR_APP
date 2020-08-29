@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     ImageView qr_code_img, delete_img, share_img, copy_img;
     TextView content_txt, delete_txt, share_txt, copy_txt;
     Button sugg_button;
+
+    private static final String TAG = "Suggestion";
 
 
     @Override
@@ -74,6 +77,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
         } else {
 // content text code gallery part
+
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(this.openFileInput("myImage"));
                 qr_code_img.setImageBitmap(bitmap);
@@ -85,6 +89,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
 // Give suggestion for different QR code
         IntentSuggestions();
+// Give suggestion for different QR code   btn
         sugg_button.setOnClickListener(this);
     }
 
@@ -121,7 +126,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
  private  void BrowserIntent(){
      String url = content_txt.getText().toString();
      Intent intent = new Intent(Intent.ACTION_VIEW);
-     intent.setData(Uri.parse(url));
+     intent.setData(Uri.parse("http://" + url));
      startActivity(intent);
  }
 // Intent for email
@@ -135,15 +140,16 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
 
 // check for phone number
-    public boolean isValidPhone(String phone) {
+    private boolean isValidPhone(String phone) {
         if (phone.trim().length() < 0) {
             return false;
         } else {
             return android.util.Patterns.PHONE.matcher(phone).matches();
         }
     }
+
 // check for URL
-    public boolean isValidURL(String potentialUrl) {
+    private boolean isValidURL(String potentialUrl) {
         if (potentialUrl.trim().length() < 0) {
             return false;
         } else {
@@ -165,8 +171,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     private void IntentSuggestions() {
 
         if (isValidPhone(content_txt.getText().toString())) {
+           // Log.d(TAG, "onActivityResult() ERROR " + content_txt);
             sugg_button.setText("Call");
-
         }
         else {
            isValidURL(content_txt.getText().toString());
@@ -214,11 +220,10 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         if(v == sugg_button) {
             if (isValidPhone(content_txt.getText().toString())) {
                 MakeCall();
-
             }
             else {
                 isValidURL(content_txt.getText().toString());
-               BrowserIntent();
+                BrowserIntent();
 
             }
 
