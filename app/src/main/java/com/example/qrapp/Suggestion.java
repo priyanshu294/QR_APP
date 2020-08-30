@@ -93,7 +93,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         sugg_button.setOnClickListener(this);
     }
 
-// calling suggestion or call Intent
+    // calling suggestion or call Intent
     private void MakeCall() {
         String number = content_txt.getText().toString();
         if (number.trim().length() > 0) {
@@ -122,25 +122,29 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             }
         }
     }
- // Intent for browser
- private  void BrowserIntent(){
-     String url = content_txt.getText().toString();
-     Intent intent = new Intent(Intent.ACTION_VIEW);
-     intent.setData(Uri.parse("http://" + url));
-     startActivity(intent);
- }
-// Intent for email
-    private  void EmailIntent(String addresses){
+
+    // Intent for browser
+    private void BrowserIntent() {
+        String url = content_txt.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
+    // Intent for email
+    private void EmailIntent(String addresses) {
         String url = content_txt.getText().toString();
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"+ url));
+        intent.setData(Uri.parse("mailto:" + url));
         intent.putExtra(Intent.EXTRA_EMAIL, addresses);
         startActivity(intent);
     }
 
 
-// check for phone number
+    // check for phone number
     private boolean isValidPhone(String phone) {
+        String regex = "\\s*\\btel:\\b\\s*";
+        phone = phone.replaceAll(regex, "");
         if (phone.trim().length() < 0) {
             return false;
         } else {
@@ -148,7 +152,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-// check for URL
+    // check for URL
     private boolean isValidURL(String potentialUrl) {
         if (potentialUrl.trim().length() < 0) {
             return false;
@@ -156,7 +160,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             return Patterns.WEB_URL.matcher(potentialUrl).matches();
         }
     }
-// check for email
+
+    // check for email
     public boolean isValidEmail(String email) {
         if (TextUtils.isEmpty(email)) {
             return false;
@@ -166,21 +171,17 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     }
 
 
-
-//  Give suggestion for different QR code
+    //  Give suggestion for different QR code
     private void IntentSuggestions() {
 
         if (isValidPhone(content_txt.getText().toString())) {
-           // Log.d(TAG, "onActivityResult() ERROR " + content_txt);
             sugg_button.setText("Call");
-        }
-        else {
-           isValidURL(content_txt.getText().toString());
+        } else {
+            isValidURL(content_txt.getText().toString());
             sugg_button.setText("Open in Browser");
 
         }
     }
-
 
 
     // Action bar button
@@ -214,14 +215,13 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     }
 
-// For calling
+    // For calling
     @Override
     public void onClick(View v) {
-        if(v == sugg_button) {
+        if (v == sugg_button) {
             if (isValidPhone(content_txt.getText().toString())) {
                 MakeCall();
-            }
-            else {
+            } else {
                 isValidURL(content_txt.getText().toString());
                 BrowserIntent();
 

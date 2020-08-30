@@ -229,7 +229,7 @@ public class URL extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         // create qr code btn
         if (v == button) {
-            String data = editText.getText().toString();
+            String data = "http://"+ editText.getText().toString();
             if (data.isEmpty()) {
                 editText.setError("Value Required.");
 
