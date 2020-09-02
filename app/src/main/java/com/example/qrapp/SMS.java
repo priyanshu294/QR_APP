@@ -234,7 +234,7 @@ public class SMS extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         // create code btn
         if(v == button){
-            String data =  "Phone: " + (editText_num.getText().toString()) + "\n message: "+ (editText_mes.getText().toString());
+            String data =   (editText_num.getText().toString()) + ":" + (editText_mes.getText().toString());
 
             String data_phone = editText_num.getText().toString() ;
             String data_mess = editText_mes.getText().toString() ;

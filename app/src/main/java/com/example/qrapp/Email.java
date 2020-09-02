@@ -272,7 +272,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
         @Override
         public void onClick (View view){
             if (view == button) {
-                String data1 = "email: " + (editText_add.getText().toString()) + "\n sub: " +
+                String data1 =  (editText_add.getText().toString()) + "\n sub: " +
                         (editText_sub.getText().toString()) + "\n body: " + (editText_mes.getText().toString());
 
                 String data_email = editText_add.getText().toString();
@@ -289,7 +289,7 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
                     editText_add.setError("Please Enter Valid Email.");
                 }
                 else {
-                    QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.TEXT, 300);
+                    QRGEncoder qrgEncoder = new QRGEncoder(data1, null, QRGContents.Type.EMAIL, 300);
 
                     try {
                         Bitmap qrBits = qrgEncoder.getBitmap();
