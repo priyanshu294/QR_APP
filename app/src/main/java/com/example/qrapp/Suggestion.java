@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,8 +16,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.MailTo;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -53,6 +57,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     boolean mPermission = false;
     boolean isQRGenerated = true;
+    private Object MailTo;
 
 
     @Override
@@ -150,31 +155,89 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         intent.putExtra(SearchManager.QUERY, web);
         startActivity(intent);
     }
-    // Intent for sms
-   private void SentMessage() {
-        try {
-            String msg = content_txt.getText().toString();
-            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-            smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.putExtra("sms_body", msg);
-            startActivity(smsIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "No SIM Found", Toast.LENGTH_LONG).show();
+    // Intent for wifi
+    private  void WifiIntent(){
+        String wifi = content_txt.getText().toString();
+        Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+        wifiIntent.putExtra("ssid",wifi);
+        startActivity(wifiIntent);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+            if (!wifiManager.isWifiEnabled()) {
+
+                Toast.makeText(Suggestion.this,
+                        "something went wrong ", Toast.LENGTH_SHORT).show();
+            } else {
+                WifiIntent();
+            }
         }
     }
 
+    // Intent for search on GoogleMap
+    private void MapIntent() {
+        String location = content_txt.getText().toString();
+        Uri gmIntentUri = Uri.parse(location);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+    // Intent for sms
+   private void SentMessage() {
+       String msg = content_txt.getText().toString();
+       String PHONE_REGEX = "^\\+([0-9\\-]?){9,11}[0-9]$";
+      String call = msg.replaceAll(PHONE_REGEX, "");
+      Uri sms_uri = Uri.parse("sms:"+ call);
+      Intent sms_intent = new Intent(Intent.ACTION_SENDTO,sms_uri);
+      sms_intent.putExtra("sms_body",msg);
+      startActivity(sms_intent);
+//        try {
+//            String msg = content_txt.getText().toString();
+//            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+//            smsIntent.setType("vnd.android-dir/mms-sms");
+//            smsIntent.putExtra("sms_body", msg);
+//            startActivity(smsIntent);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "No SIM Found", Toast.LENGTH_LONG).show();
+//        }
+    }
+
      //Intent for email
-    private void EmailIntent( String to, String subject, String body) {
+    private void EmailIntent() {
         String url = content_txt.getText().toString();
-        Intent intent = new Intent(Intent.ACTION_SEND);
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + url));
-        intent.putExtra(Intent.EXTRA_EMAIL, to);
-        intent.putExtra(Intent.EXTRA_SUBJECT,subject);
-        intent.putExtra(Intent.EXTRA_TEMPLATE,body);
+        intent.putExtra(Intent.EXTRA_EMAIL,url );
         startActivity(intent);
     }
 
+    // check for Location
+    private boolean isValidLocation(String loc) {
+        if(loc.trim().length() < 0){
+            return  false;
+        } else
+            loc = content_txt.getText().toString();
+        if(loc.startsWith("geo:")){
+            return true;
+        }
+       return false;
+        }
+
+    // check for Wifi
+    private boolean isValidWifi(String wifi) {
+        if(wifi.trim().length() < 0){
+            return  false;
+        } else
+            wifi = content_txt.getText().toString();
+        if(wifi.startsWith("WIFI:")){
+            return true;
+        }
+        return false;
+    }
 
     // check for phone number
     private boolean isValidPhone(String phone) {
@@ -220,20 +283,14 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         } else {
             email = content_txt.getText().toString();
             if (email.startsWith("mailto:")) {
-                MailTo mt = MailTo.parse(email);
-                String mail = mt.getTo();
-                return Patterns.EMAIL_ADDRESS.matcher(mail).matches();
+                return true;
             } else if(email.startsWith("MATMSG:TO:")){
-//                MailTo mt = MailTo.parse(email);
-//                String mail2 = mt.getTo();
-//                return Patterns.EMAIL_ADDRESS.matcher(mail2).matches();
+                return true;
             } else if(email.startsWith("SMTP:")){
-//                MailTo mt3 = MailTo.parse(email);
-//                String mail3 = mt3.getTo();
-//                return Patterns.EMAIL_ADDRESS.matcher(mail3).matches();
+               return true;
             }
         }
-        return true;
+        return false;
     }
 
     //  Give suggestion for different QR code
@@ -245,7 +302,14 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             sugg_button.setText("Open in Browser");
         } else  if(isValidSMS(content_txt.getText().toString())){
             sugg_button.setText("Send SMS");
-        }else {
+        }else  if(isValidLocation(content_txt.getText().toString())){
+            sugg_button.setText("Search On GoogleMap");
+        }else if(isValidEmail(content_txt.getText().toString())){
+            sugg_button.setText("Send Email");
+        }else if(isValidWifi(content_txt.getText().toString())){
+            sugg_button.setText("Connect Wifi");
+        }
+        else {
             sugg_button.setText("Search On Web");
         }
 
@@ -354,6 +418,12 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 BrowserIntent();
             } else if(isValidSMS(content_txt.getText().toString())){
                 SentMessage();
+            }else if(isValidLocation(content_txt.getText().toString())){
+                MapIntent();
+            }else if(isValidEmail(content_txt.getText().toString())){
+                EmailIntent();
+            }else if(isValidWifi(content_txt.getText().toString())){
+                WifiIntent();
             }
             else {
                 SearchIntent();

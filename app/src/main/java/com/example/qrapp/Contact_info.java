@@ -325,35 +325,15 @@ public class Contact_info extends AppCompatActivity implements View.OnTouchListe
                 editText_first_name.setError("Value Required.");
             } else if(data_last.trim().isEmpty()){
                 editText_last_name.setError("Value Required.");
-            }else if (data_org.trim().isEmpty()){
-                editText_org.setError("Value Required.");
-            }else if(data_email.trim().isEmpty()){
-                editText_email.setError("Value Required.");
             } else if(data_phone.trim().isEmpty()){
                 editText_phone.setError("Value Required.");
-            }else if(data_address.trim().isEmpty()){
-                editText_address.setError("Value Required.");
-            }else if(data_city.trim().isEmpty()){
-                editText_city.setError("Value Required.");
-            }else  if(data_state.trim().isEmpty()){
-                editText_state.setError("Value Required.");
-            }else if(data_country.trim().isEmpty()){
-                editText_contry.setError("Value Required.");
-            } else if(data_pincode.trim().isEmpty()){
-                editText_pincode.setError("Value Required.");
-            }else if(data_url.trim().isEmpty()){
-                editText_url.setError("Value Required.");
             } else if(!editText_first_name.getText().toString().matches("[a-z,A-Z]*")){
                 editText_first_name.setError("Enter Only Character.");
             } else if(!editText_last_name.getText().toString().matches("[a-z,A-Z]*")){
                 editText_last_name.setError("Enter Only Character.");
-            }  else if(!Patterns.EMAIL_ADDRESS.matcher(editText_email.getText().toString()).matches()){
-                editText_email.setError("Please Enter Valid Email.");
-            } else if(editText_phone.length()<4 || editText_phone.length()>12){
+            }  else if(editText_phone.length()<4 || editText_phone.length()>12){
                 editText_phone.setError("Enter Valid Phone Number.");
-            }
-            else if(!editText_pincode.getText().toString().matches("[0-9]{6}")){
-                editText_pincode.setError("Enter Only 6 Digit Number.");
+
             }
             else {
                 QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 300);
