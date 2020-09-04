@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".Suggestion"
-            android:parentActivityName=".Scanner"/>
+            android:parentActivityName=".Scanner"
+           />
 
         <activity
             android:name=".GeoLocation"

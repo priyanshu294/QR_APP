@@ -8,7 +8,7 @@
         android:title="Download"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/sendfile"
+    <item android:id="@+id/sendcode"
         android:title="Send file..."
         app:showAsAction="never" />
     <item android:id="@+id/openwith"

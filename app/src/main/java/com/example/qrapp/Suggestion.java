@@ -4,16 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.MailTo;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
@@ -57,7 +61,6 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     boolean mPermission = false;
     boolean isQRGenerated = true;
-    private Object MailTo;
 
 
     @Override
@@ -108,6 +111,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         IntentSuggestions();
 // Give suggestion for different QR code   btn
         sugg_button.setOnClickListener(this);
+        share_img.setOnClickListener(this);
+        delete_img.setOnClickListener(this);
     }
 
     // calling suggestion or call Intent
@@ -155,11 +160,12 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         intent.putExtra(SearchManager.QUERY, web);
         startActivity(intent);
     }
+
     // Intent for wifi
-    private  void WifiIntent(){
+    private void WifiIntent() {
         String wifi = content_txt.getText().toString();
         Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-        wifiIntent.putExtra("ssid",wifi);
+        wifiIntent.putExtra("ssid", wifi);
         startActivity(wifiIntent);
     }
 
@@ -185,15 +191,16 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
     }
+
     // Intent for sms
-   private void SentMessage() {
-       String msg = content_txt.getText().toString();
-       String PHONE_REGEX = "^\\+([0-9\\-]?){9,11}[0-9]$";
-      String call = msg.replaceAll(PHONE_REGEX, "");
-      Uri sms_uri = Uri.parse("sms:"+ call);
-      Intent sms_intent = new Intent(Intent.ACTION_SENDTO,sms_uri);
-      sms_intent.putExtra("sms_body",msg);
-      startActivity(sms_intent);
+    private void SentMessage() {
+        String msg = content_txt.getText().toString();
+        String PHONE_REGEX = "^\\+([0-9\\-]?){9,11}[0-9]$";
+        String call = msg.replaceAll(PHONE_REGEX, "");
+        Uri sms_uri = Uri.parse("sms:" + call);
+        Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
+        sms_intent.putExtra("sms_body", msg);
+        startActivity(sms_intent);
 //        try {
 //            String msg = content_txt.getText().toString();
 //            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
@@ -206,34 +213,34 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 //        }
     }
 
-     //Intent for email
+    //Intent for email
     private void EmailIntent() {
         String url = content_txt.getText().toString();
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + url));
-        intent.putExtra(Intent.EXTRA_EMAIL,url );
+        intent.putExtra(Intent.EXTRA_EMAIL, url);
         startActivity(intent);
     }
 
     // check for Location
     private boolean isValidLocation(String loc) {
-        if(loc.trim().length() < 0){
-            return  false;
+        if (loc.trim().length() < 0) {
+            return false;
         } else
             loc = content_txt.getText().toString();
-        if(loc.startsWith("geo:")){
+        if (loc.startsWith("geo:")) {
             return true;
         }
-       return false;
-        }
+        return false;
+    }
 
     // check for Wifi
     private boolean isValidWifi(String wifi) {
-        if(wifi.trim().length() < 0){
-            return  false;
+        if (wifi.trim().length() < 0) {
+            return false;
         } else
             wifi = content_txt.getText().toString();
-        if(wifi.startsWith("WIFI:")){
+        if (wifi.startsWith("WIFI:")) {
             return true;
         }
         return false;
@@ -265,15 +272,14 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             return false;
         } else {
             sms = content_txt.getText().toString();
-            if(sms.startsWith("sms:")){
-                return  true;
-            } else if(sms.startsWith("SMSTO:")){
+            if (sms.startsWith("sms:")) {
+                return true;
+            } else if (sms.startsWith("SMSTO:")) {
                 return true;
             }
         }
-        return  false;
+        return false;
     }
-
 
 
     // check for email
@@ -284,10 +290,10 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             email = content_txt.getText().toString();
             if (email.startsWith("mailto:")) {
                 return true;
-            } else if(email.startsWith("MATMSG:TO:")){
+            } else if (email.startsWith("MATMSG:TO:")) {
                 return true;
-            } else if(email.startsWith("SMTP:")){
-               return true;
+            } else if (email.startsWith("SMTP:")) {
+                return true;
             }
         }
         return false;
@@ -298,18 +304,17 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
         if (isValidPhone(content_txt.getText().toString())) {
             sugg_button.setText("Call");
-        } else if(isValidURL(content_txt.getText().toString())){
+        } else if (isValidURL(content_txt.getText().toString())) {
             sugg_button.setText("Open in Browser");
-        } else  if(isValidSMS(content_txt.getText().toString())){
+        } else if (isValidSMS(content_txt.getText().toString())) {
             sugg_button.setText("Send SMS");
-        }else  if(isValidLocation(content_txt.getText().toString())){
+        } else if (isValidLocation(content_txt.getText().toString())) {
             sugg_button.setText("Search On GoogleMap");
-        }else if(isValidEmail(content_txt.getText().toString())){
+        } else if (isValidEmail(content_txt.getText().toString())) {
             sugg_button.setText("Send Email");
-        }else if(isValidWifi(content_txt.getText().toString())){
+        } else if (isValidWifi(content_txt.getText().toString())) {
             sugg_button.setText("Connect Wifi");
-        }
-        else {
+        } else {
             sugg_button.setText("Search On Web");
         }
 
@@ -347,8 +352,66 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         return super.onOptionsItemSelected(item);
 
     }
-// save qr code
-    private void saveToGallery () {
+
+// Delete QR code
+    private  void DeleteQR(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Suggestion.this);
+        builder.setTitle("Delete Your QR");
+        builder.setMessage("Press ok to Delete, if you want to cancel then press cancel");
+        builder.setIcon(R.drawable.icon_image);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(Suggestion.this, "Deleted Successfully",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),Scanner.class));
+                onBackPressed();
+                finish();
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            Toast.makeText(Suggestion.this, "Deletion Failed",Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // Share code data
+    private void shareQR() {
+        // share using File Provider
+
+        Drawable drawable = qr_code_img.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+
+        try {
+            File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + "image.png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            file.setReadable(true, false);
+            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+
+            intent.putExtra(Intent.EXTRA_STREAM, photoURI);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType("image/png");
+
+            startActivity(Intent.createChooser(intent, "Share QR via"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // save qr code
+    private void saveToGallery() {
         // checking for imageview is empty or not.
 
         if (!isQRGenerated) {
@@ -378,8 +441,9 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         }
 
     }
+
     // permission for storage
-    private boolean checkpermission () {
+    private boolean checkpermission() {
         // checkpermission returns boolean value.
 
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -414,21 +478,28 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         if (v == sugg_button) {
             if (isValidPhone(content_txt.getText().toString())) {
                 MakeCall();
-            } else if(isValidURL(content_txt.getText().toString())){
+            } else if (isValidURL(content_txt.getText().toString())) {
                 BrowserIntent();
-            } else if(isValidSMS(content_txt.getText().toString())){
+            } else if (isValidSMS(content_txt.getText().toString())) {
                 SentMessage();
-            }else if(isValidLocation(content_txt.getText().toString())){
+            } else if (isValidLocation(content_txt.getText().toString())) {
                 MapIntent();
-            }else if(isValidEmail(content_txt.getText().toString())){
+            } else if (isValidEmail(content_txt.getText().toString())) {
                 EmailIntent();
-            }else if(isValidWifi(content_txt.getText().toString())){
+            } else if (isValidWifi(content_txt.getText().toString())) {
                 WifiIntent();
-            }
-            else {
+            } else {
                 SearchIntent();
             }
 
+        }else if (v == share_img) {
+            if(!isQRGenerated){
+                Toast.makeText(this, "Please Create QR Code.!", Toast.LENGTH_SHORT).show();
+            }else {
+                shareQR();
+            }
+        } else if(v == delete_img){
+            DeleteQR();
         }
     }
 }

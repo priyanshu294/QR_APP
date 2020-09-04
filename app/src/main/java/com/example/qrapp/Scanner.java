@@ -92,7 +92,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         pick_up.setOnClickListener(this);
 
 
-
     }
 
     // gallery take qr code image
@@ -138,8 +137,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
                     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
-
-
                     Reader reader = new MultiFormatReader();
 
                     Result result = reader.decode(bitmap);
@@ -157,15 +154,11 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
                    // Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
 
-
-
                 } catch (Exception e) {
 
                     Log.d(TAG, "onActivityResult() ERROR " + e.getMessage());
 
                 }
-
-
 
             } catch (FileNotFoundException e) {
 
@@ -174,7 +167,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
 
             }
-
 
         } else {
 
