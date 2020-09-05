@@ -10,6 +10,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -111,8 +113,10 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         IntentSuggestions();
 // Give suggestion for different QR code   btn
         sugg_button.setOnClickListener(this);
+
         share_img.setOnClickListener(this);
         delete_img.setOnClickListener(this);
+        copy_img.setOnClickListener(this);
     }
 
     // calling suggestion or call Intent
@@ -345,11 +349,28 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                     saveToGallery();
                 }
                 break;
+            case R.id.feedback:
+                FeedbackQR();
+                break;
 
             default:
 
         }
         return super.onOptionsItemSelected(item);
+
+    }
+
+ // feedback to QR code
+    private void FeedbackQR(){
+        startActivity(new Intent(getApplicationContext(),Feedback.class));
+    }
+
+// Copy to clipboard
+    private void Copycode(){
+        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("text", content_txt.getText().toString());
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(Suggestion.this, "Copied Successfully",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -367,7 +388,6 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(Suggestion.this, "Deleted Successfully",Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(),Scanner.class));
                 onBackPressed();
-                finish();
 
             }
         });
@@ -380,6 +400,12 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 
     // Share code data
     private void shareQR() {
@@ -494,12 +520,14 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
         }else if (v == share_img) {
             if(!isQRGenerated){
-                Toast.makeText(this, "Please Create QR Code.!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Scan QR Code.!", Toast.LENGTH_SHORT).show();
             }else {
                 shareQR();
             }
         } else if(v == delete_img){
             DeleteQR();
+        }else if(v == copy_img){
+            Copycode();
         }
     }
 }

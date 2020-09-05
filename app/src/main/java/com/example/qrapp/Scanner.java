@@ -91,7 +91,6 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         // pick photos from gallery
         pick_up.setOnClickListener(this);
 
-
     }
 
     // gallery take qr code image
