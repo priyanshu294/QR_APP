@@ -1,27 +1,18 @@
 package com.example.qrapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -40,34 +31,33 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class Scanner extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "MainActivity";
 
     CodeScanner codeScanner;
     CodeScannerView scannView;
     Button pick_up;
 
-
     private static final int Gallery_REQUEST_CODE = 123;
 
-    public static final String TAG = "MainActivity";
 
+    private void initilize(){
+        scannView = findViewById(R.id.scannerView);
+        pick_up = findViewById(R.id.pick_up);
 
-    @Override
+    }    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initilize();
 
-
-        scannView = findViewById(R.id.scannerView);
         codeScanner = new CodeScanner(this, scannView);
-        pick_up = findViewById(R.id.pick_up);
 
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -76,10 +66,11 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                    String text = (result.getText());
-                    Intent intent = new Intent(getApplicationContext(),Suggestion.class);
-                    intent.putExtra("MyResult", text);
-                    startActivity(intent);
+                        String qrResult = (result.getText());
+                        Intent intent = new Intent(getApplicationContext(),Suggestion.class);
+                        intent.putExtra("qrResult", qrResult);
+
+                        startActivity(intent);
 
                     }
                 });
@@ -90,6 +81,7 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
         scannView.setOnClickListener(this);
         // pick photos from gallery
         pick_up.setOnClickListener(this);
+
 
     }
 
@@ -142,16 +134,17 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
                     contents = result.getText();
 
+                    // send Image and data to next Activity from Gallery :
                     Intent intent = new Intent(getApplicationContext(),Suggestion.class);
                     createImageFromBitmap(bMap);
-                    intent.putExtra("MyResult", contents);
+                    intent.putExtra("qrImageData", contents);
                     startActivity(intent);
 
-                  //  resultData.setText(contents);
+                    //  resultData.setText(contents);
 
                     Log.d(TAG, "onActivityResult() CONTENT =" + contents);
 
-                   // Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
+                    // Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
 
@@ -175,9 +168,9 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-// store image bitmap
-    public String createImageFromBitmap(Bitmap bitmap) {
-        String fileName = "myImage";
+    // store image bitmap
+    public void createImageFromBitmap(Bitmap bitmap) {
+        String fileName = "qrImage";
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -186,9 +179,7 @@ public class Scanner extends AppCompatActivity implements View.OnClickListener {
             fo.close();
         } catch (Exception e) {
             e.printStackTrace();
-            fileName = null;
         }
-        return fileName;
     }
 
 

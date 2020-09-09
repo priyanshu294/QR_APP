@@ -5,13 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,12 +18,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.MailTo;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
@@ -39,6 +33,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrapp.Type_Check.EmailCheckClass;
+import com.example.qrapp.Type_Check.GeoCheckClass;
+import com.example.qrapp.Type_Check.PhoneCheckClass;
+import com.example.qrapp.Type_Check.SmsCheckClass;
+import com.example.qrapp.Type_Check.TypeCheckClass;
+import com.example.qrapp.Type_Check.UriCheckClass;
+import com.example.qrapp.Type_Check.WifiCheckClass;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
+import com.google.zxing.Result;
+import com.google.zxing.client.result.EmailAddressParsedResult;
+import com.google.zxing.client.result.ParsedResult;
+import com.google.zxing.client.result.ParsedResultType;
+import com.google.zxing.client.result.ResultParser;
+import com.google.zxing.common.HybridBinarizer;
+import com.hbb20.BuildConfig;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -53,24 +69,33 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class Suggestion extends AppCompatActivity implements View.OnClickListener {
+import static com.google.zxing.client.result.ParsedResultType.EMAIL_ADDRESS;
+import static com.google.zxing.client.result.ParsedResultType.GEO;
+import static com.google.zxing.client.result.ParsedResultType.TEL;
+import static com.google.zxing.client.result.ParsedResultType.URI;
+import static com.google.zxing.client.result.ParsedResultType.WIFI;
+import static com.google.zxing.client.result.ParsedResultType.SMS;
+
+public class Suggestion extends AppCompatActivity implements View.OnClickListener, TypeCheckClass.QRTypeListner {
+
+    private static final String TAG = "Suggestion Class";
 
     ImageView qr_code_img, delete_img, share_img, copy_img;
     TextView content_txt, delete_txt, share_txt, copy_txt;
     Button sugg_button;
 
-    private static final String TAG = "Suggestion";
-
     boolean mPermission = false;
-    boolean isQRGenerated = true;
+    private String mQRType ;
 
+    private TypeCheckClass mTypeCheckClass ;
+    private EmailCheckClass mEmailCheckClass ;
+    private WifiCheckClass mWifiCheckClass ;
+    private SmsCheckClass mSMSCheckClass ;
+    private PhoneCheckClass mPhoneCheckClass ;
+    private UriCheckClass  mURICheckClass ;
+    private GeoCheckClass  mGeoCheckClass ;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_suggestion);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+    private void initialize(){
         qr_code_img = findViewById(R.id.qrcode_result);
         delete_img = findViewById(R.id.delte_img);
         share_img = findViewById(R.id.share_img);
@@ -81,42 +106,133 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         share_txt = findViewById(R.id.share_text);
         copy_txt = findViewById(R.id.copy_text);
         sugg_button = findViewById(R.id.creare_btn);
+    }
 
-// content text code scan part
-        if (content_txt.getText().toString().length() > 0) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_suggestion);
 
-            content_txt.setText(getIntent().getStringExtra("MyResult"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initialize();
+        mTypeCheckClass = new TypeCheckClass(this);
+        SetUpQRCode();
 
-            String data = content_txt.getText().toString();
-            QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, 500);
-
-            try {
-                Bitmap qrBits = qrgEncoder.getBitmap();
-                qr_code_img.setImageBitmap(qrBits);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } else {
-// content text code gallery part
-
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(this.openFileInput("myImage"));
-                qr_code_img.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            content_txt.setText(getIntent().getStringExtra("MyResult"));
-        }
 
 // Give suggestion for different QR code
         IntentSuggestions();
 // Give suggestion for different QR code   btn
         sugg_button.setOnClickListener(this);
-
         share_img.setOnClickListener(this);
         delete_img.setOnClickListener(this);
-        copy_img.setOnClickListener(this);
+    }
+
+    private void SetUpQRCode(){
+        Bundle mBundle = getIntent().getExtras();
+        if(mBundle!= null ){
+            String qrData1 = mBundle.getString("qrResult");
+            String qrData2 = mBundle.getString("qrImageData");
+            Log.d(TAG, "SetUpQRCode() Scanner data ="+qrData1);
+            if(qrData1 != null ){
+                Log.d(TAG, "SetUpQRCode() Scanner data ="+qrData1);
+                Log.d(TAG, "SetUpQRCode() Gallery data ="+qrData2);
+                content_txt.setText(qrData1);
+                QRGEncoder qrgEncoder = new QRGEncoder(qrData1, null, QRGContents.Type.TEXT, 250);
+                try {
+                    Bitmap qrBitMap = qrgEncoder.getBitmap();
+                    qr_code_img.setImageBitmap(qrBitMap);
+                } catch (Exception e) {
+                    Log.d(TAG, "SetUpQRCode() qrData1 EXCEPTION = "+e.getMessage());
+                }
+            }
+            if(qrData2 != null){
+                Log.d(TAG, "SetUpQRCode() Gallery data ="+qrData2);
+                try {
+                    Bitmap qrBitMap = BitmapFactory.decodeStream(this.openFileInput("qrImage"));
+                    qr_code_img.setImageBitmap(qrBitMap);
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, "SetUpQRCode() qrData2 EXCEPTION = "+e.getMessage());
+                }
+                content_txt.setText(qrData2);
+            }
+            if(hasImage(qr_code_img)){
+                Bitmap qrBitMap = ((BitmapDrawable)qr_code_img.getDrawable()).getBitmap();
+                GetQRResult(qrBitMap);
+            }
+        }
+    }
+
+    //  Give suggestion for different QR code
+    private void IntentSuggestions() {
+
+        String qrData = content_txt.getText().toString();
+        if(!qrData.equals("")){
+            if (mQRType.equals(TEL.toString())) {
+                sugg_button.setText("Call");
+            } else if (mQRType.equals(URI.toString())) {
+                sugg_button.setText("Open in Browser");
+            } else if (mQRType.equals(SMS.toString())) {
+                sugg_button.setText("Send SMS");
+            } else if (mQRType.equals(GEO.toString())){
+                sugg_button.setText("Search On GoogleMap");
+            } else if (mQRType.equals(EMAIL_ADDRESS.toString())) {
+                sugg_button.setText("Send Email");
+            } else if (mQRType.equals(WIFI.toString())){
+                sugg_button.setText("Connect Wifi");
+            } else {
+                sugg_button.setText("Web Search");
+            }
+        }else{
+            sugg_button.setText("-- --");
+        }
+    }
+
+    @Override
+    public void QRType(String Type, Object typeObject) {
+        this.mQRType = Type ;
+        Log.d(TAG, "QRType() TYPE = "+mQRType);
+        if(typeObject != null){
+            switch(mQRType){
+                case "EMAIL_ADDRESS" : mEmailCheckClass = new EmailCheckClass(typeObject);
+                    break ;
+                case "WIFI" : mWifiCheckClass = new WifiCheckClass(typeObject);
+                    break ;
+                case "SMS" : mSMSCheckClass = new SmsCheckClass(typeObject);
+                    break ;
+                case "TEL" : mPhoneCheckClass = new PhoneCheckClass(typeObject);
+                    break ;
+                case "URI":  mURICheckClass = new UriCheckClass(typeObject);
+                break;
+                case "GEO":  mGeoCheckClass = new GeoCheckClass(typeObject);
+                break;
+                default:
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 123) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                MakeCall();
+            } else {
+                Toast.makeText(this, "Permission Required.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+            if (!wifiManager.isWifiEnabled()) {
+
+                Toast.makeText(Suggestion.this,
+                        "something went wrong ", Toast.LENGTH_SHORT).show();
+            } else {
+                WifiIntent();
+            }
+        }
     }
 
     // calling suggestion or call Intent
@@ -131,20 +247,14 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                         new String[]{Manifest.permission.CALL_PHONE},
                         123);
             } else {
-                String dial = "tel:" + number;
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
-                startActivity(intent);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 123) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                MakeCall();
-            } else {
-                Toast.makeText(this, "Permission Required.", Toast.LENGTH_LONG).show();
+                if(number.startsWith("tel:")){
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
+                    startActivity(intent);
+                } else{
+                    String dial = "tel:" + number;
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
+                    startActivity(intent);
+                }
             }
         }
     }
@@ -173,20 +283,6 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         startActivity(wifiIntent);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-            if (!wifiManager.isWifiEnabled()) {
-
-                Toast.makeText(Suggestion.this,
-                        "something went wrong ", Toast.LENGTH_SHORT).show();
-            } else {
-                WifiIntent();
-            }
-        }
-    }
-
     // Intent for search on GoogleMap
     private void MapIntent() {
         String location = content_txt.getText().toString();
@@ -198,251 +294,109 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     // Intent for sms
     private void SentMessage() {
-        String msg = content_txt.getText().toString();
-        String PHONE_REGEX = "^\\+([0-9\\-]?){9,11}[0-9]$";
-        String call = msg.replaceAll(PHONE_REGEX, "");
-        Uri sms_uri = Uri.parse("sms:" + call);
+        String number = mSMSCheckClass.SetSMSNumber();
+        String message = mSMSCheckClass.SetSMSBody();
+        Log.d(TAG, "SentMessage() num = "+number +"\n message = "+message);
+        Uri sms_uri = Uri.parse("sms:");
         Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
-        sms_intent.putExtra("sms_body", msg);
-        startActivity(sms_intent);
-//        try {
-//            String msg = content_txt.getText().toString();
-//            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-//            smsIntent.setType("vnd.android-dir/mms-sms");
-//            smsIntent.putExtra("sms_body", msg);
-//            startActivity(smsIntent);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "No SIM Found", Toast.LENGTH_LONG).show();
-//        }
+        sms_intent.putExtra("address", number);
+        sms_intent.putExtra("sms_body", message);
+        try {
+            //Intent chooser = Intent.createChooser(sms_intent, "Send SMS with :");
+            startActivity(sms_intent);
+        }catch(Exception e){
+            Log.e(TAG, "SentMessage() EXCEPTION "+e.getMessage() );
+        }
     }
 
     //Intent for email
     private void EmailIntent() {
-        String url = content_txt.getText().toString();
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:" + url));
-        intent.putExtra(Intent.EXTRA_EMAIL, url);
-        startActivity(intent);
-    }
 
-    // check for Location
-    private boolean isValidLocation(String loc) {
-        if (loc.trim().length() < 0) {
-            return false;
-        } else
-            loc = content_txt.getText().toString();
-        if (loc.startsWith("geo:")) {
-            return true;
-        }
-        return false;
-    }
-
-    // check for Wifi
-    private boolean isValidWifi(String wifi) {
-        if (wifi.trim().length() < 0) {
-            return false;
-        } else
-            wifi = content_txt.getText().toString();
-        if (wifi.startsWith("WIFI:")) {
-            return true;
-        }
-        return false;
-    }
-
-    // check for phone number
-    private boolean isValidPhone(String phone) {
-        String regex = "\\s*\\btel:\\b\\s*";
-        phone = phone.replaceAll(regex, "");
-        if (phone.trim().length() < 0) {
-            return false;
-        } else {
-            return android.util.Patterns.PHONE.matcher(phone).matches();
+        String emailTo = mEmailCheckClass.SetEmailTo();
+        String subject = mEmailCheckClass.SetEmailSubject();
+        String body = mEmailCheckClass.SetEmailBody() ;
+        Intent intent = new Intent(Intent.ACTION_SENDTO)
+                .setData(new Uri.Builder().scheme("mailto").build())
+                .putExtra(Intent.EXTRA_EMAIL, new String[]{ "<"+emailTo+">" })
+                .putExtra(Intent.EXTRA_SUBJECT, subject)
+                .putExtra(Intent.EXTRA_TEXT, body);
+        Log.d(TAG, "EmailIntent() intent data = "+intent.getData());
+        try {
+            Intent chooser = Intent.createChooser(intent, "Send email with :");
+            startActivity(chooser);
+        } catch (Exception e) {
+            Log.d(TAG, "EmailIntent() NO EMAIL APP AVAILABLE ... !");
         }
     }
 
-    // check for URL
-    private boolean isValidURL(String potentialUrl) {
-        if (potentialUrl.trim().length() < 0) {
-            return false;
-        } else {
-            return Patterns.WEB_URL.matcher(potentialUrl).matches();
-        }
-    }
-
-    // check for SMS
-    private boolean isValidSMS(String sms) {
-        if (sms.trim().length() < 0) {
-            return false;
-        } else {
-            sms = content_txt.getText().toString();
-            if (sms.startsWith("sms:")) {
-                return true;
-            } else if (sms.startsWith("SMSTO:")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    // check for email
-    private boolean isValidEmail(String email) {
-        if (email.trim().length() < 0) {
-            return false;
-        } else {
-            email = content_txt.getText().toString();
-            if (email.startsWith("mailto:")) {
-                return true;
-            } else if (email.startsWith("MATMSG:TO:")) {
-                return true;
-            } else if (email.startsWith("SMTP:")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //  Give suggestion for different QR code
-    private void IntentSuggestions() {
-
-        if (isValidPhone(content_txt.getText().toString())) {
-            sugg_button.setText("Call");
-        } else if (isValidURL(content_txt.getText().toString())) {
-            sugg_button.setText("Open in Browser");
-        } else if (isValidSMS(content_txt.getText().toString())) {
-            sugg_button.setText("Send SMS");
-        } else if (isValidLocation(content_txt.getText().toString())) {
-            sugg_button.setText("Search On GoogleMap");
-        } else if (isValidEmail(content_txt.getText().toString())) {
-            sugg_button.setText("Send Email");
-        } else if (isValidWifi(content_txt.getText().toString())) {
-            sugg_button.setText("Connect Wifi");
-        } else {
-            sugg_button.setText("Search On Web");
-        }
-
-
-    }
-
-
-    // Action bar button
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.scan_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.download:
-//                 checkpermission() called and then if-else
-//                 used to confirm for status of permission.
-                checkpermission();
-                if (!checkpermission()) {
-                    checkpermission();
-                } else {
-                    saveToGallery();
-                }
-                break;
-            case R.id.feedback:
-                FeedbackQR();
-                break;
-
-            default:
-
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
- // feedback to QR code
-    private void FeedbackQR(){
-        startActivity(new Intent(getApplicationContext(),Feedback.class));
-    }
-
-// Copy to clipboard
-    private void Copycode(){
-        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText("text", content_txt.getText().toString());
-        clipboardManager.setPrimaryClip(clipData);
-        Toast.makeText(Suggestion.this, "Copied Successfully",Toast.LENGTH_SHORT).show();
-
-    }
-
-// Delete QR code
+    // Delete QR code
     private  void DeleteQR(){
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Suggestion.this);
-        builder.setTitle("Delete Your QR");
-        builder.setMessage("Press ok to Delete, if you want to cancel then press cancel");
-        builder.setIcon(R.drawable.icon_image);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(Suggestion.this, "Deleted Successfully",Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(),Scanner.class));
-                onBackPressed();
+        if(hasImage(qr_code_img)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(Suggestion.this);
+            builder.setTitle("Delete QR :");
+            builder.setMessage("Are you sure you want to delete QR data ?");
+            builder.setIcon(R.drawable.icon_image);
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(Suggestion.this, "QR deleted ...",Toast.LENGTH_SHORT).show();
+                    qr_code_img.setImageDrawable(null);
+                    content_txt.setText("");
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(Suggestion.this, "Cancelled Deletion ...",Toast.LENGTH_SHORT).show();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }else{
+            Toast.makeText(this, "No QR code to delete ...", Toast.LENGTH_SHORT).show();
+        }
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            Toast.makeText(Suggestion.this, "Deletion Failed",Toast.LENGTH_SHORT).show();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
 
     // Share code data
     private void shareQR() {
         // share using File Provider
+        if(hasImage(qr_code_img)) {
+            Drawable drawable = qr_code_img.getDrawable();
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
-        Drawable drawable = qr_code_img.getDrawable();
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            try {
+                File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + "image.png");
+                FileOutputStream fOut = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                fOut.flush();
+                fOut.close();
+                file.setReadable(true, false);
+                final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri photoURI = FileProvider.getUriForFile(getApplicationContext(),
+                        BuildConfig.APPLICATION_ID + ".provider", file);
 
-        try {
-            File file = new File(getApplicationContext().getExternalCacheDir(), File.separator + "image.png");
-            FileOutputStream fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-            fOut.close();
-            file.setReadable(true, false);
-            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                intent.putExtra(Intent.EXTRA_STREAM, photoURI);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setType("image/png");
 
-            intent.putExtra(Intent.EXTRA_STREAM, photoURI);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setType("image/png");
-
-            startActivity(Intent.createChooser(intent, "Share QR via"));
-        } catch (Exception e) {
-            e.printStackTrace();
+                startActivity(Intent.createChooser(intent, "Share QR via"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            Toast.makeText(this, "No QR code to share ...", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     // save qr code
     private void saveToGallery() {
         // checking for imageview is empty or not.
 
-        if (!isQRGenerated) {
-            Toast.makeText(this, "QR code not generated.!", Toast.LENGTH_SHORT).show();
-        } else {
+        if (hasImage(qr_code_img)) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) qr_code_img.getDrawable();
             Bitmap bitmap = bitmapDrawable.getBitmap();
 
@@ -464,8 +418,9 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 Log.d(TAG, "saveToGallery() EXCEPTION : " + e.getMessage());
                 Toast.makeText(this, "Could not Download.!!!", Toast.LENGTH_SHORT).show();
             }
+        }else{
+            Toast.makeText(this, "No QR Code to Save ...", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     // permission for storage
@@ -502,32 +457,91 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if (v == sugg_button) {
-            if (isValidPhone(content_txt.getText().toString())) {
-                MakeCall();
-            } else if (isValidURL(content_txt.getText().toString())) {
-                BrowserIntent();
-            } else if (isValidSMS(content_txt.getText().toString())) {
-                SentMessage();
-            } else if (isValidLocation(content_txt.getText().toString())) {
-                MapIntent();
-            } else if (isValidEmail(content_txt.getText().toString())) {
-                EmailIntent();
-            } else if (isValidWifi(content_txt.getText().toString())) {
-                WifiIntent();
-            } else {
-                SearchIntent();
+            String qrData = content_txt.getText().toString() ;
+            if(!qrData.equals("")){
+                if (mQRType.equals(TEL.toString())) {
+                    MakeCall();
+                } else if (mQRType.equals(URI.toString())) {
+                    BrowserIntent();
+                } else if (mQRType.equals(SMS.toString())) {
+                    SentMessage();
+                } else if (mQRType.equals(GEO.toString())) {
+                    MapIntent();
+                } else if (mQRType.equals(EMAIL_ADDRESS.toString())) {
+                    EmailIntent();
+                } else if (mQRType.equals(WIFI.toString())) {
+                    WifiIntent();
+                } else {
+                    SearchIntent();
+                }
+            }else{
+                Toast.makeText(this, "No data found ...", Toast.LENGTH_SHORT).show();
             }
+        }
+        if (v == share_img) {
 
-        }else if (v == share_img) {
-            if(!isQRGenerated){
-                Toast.makeText(this, "Please Scan QR Code.!", Toast.LENGTH_SHORT).show();
-            }else {
-                shareQR();
-            }
-        } else if(v == delete_img){
+            shareQR();
+        }
+        if(v == delete_img){
             DeleteQR();
-        }else if(v == copy_img){
-            Copycode();
         }
     }
+    // Action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.scan_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.download:
+//                 checkpermission() called and then if-else
+//                 used to confirm for status of permission.
+                checkpermission();
+                if (!checkpermission()) {
+                    checkpermission();
+                } else {
+                    saveToGallery();
+                }
+                break;
+
+            default:
+
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    private boolean hasImage (@NonNull ImageView view){
+        Drawable drawable = view.getDrawable();
+        boolean hasImage = (drawable != null);
+
+        if (hasImage && (drawable instanceof BitmapDrawable)) {
+            hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+        }
+
+        return hasImage;
+    }
+
+    private void GetQRResult(Bitmap bMap){
+        if(bMap != null){
+            int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
+            bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+            LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            Reader reader = new MultiFormatReader();
+            try {
+                Result result = reader.decode(bitmap);
+                mTypeCheckClass.GetTypeOfQR(result);
+            } catch (Exception e) {
+                Log.d(TAG, "GetQRResult() EXCEPTION "+e.getMessage());
+            }
+        }
+    }
+
 }
