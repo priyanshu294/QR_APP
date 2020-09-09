@@ -167,7 +167,6 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
     private void shareImage() {
         // share using File Provider
 
-
             Drawable drawable = imageView.getDrawable();
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 

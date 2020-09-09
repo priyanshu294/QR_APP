@@ -57,7 +57,6 @@ import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ParsedResultType;
 import com.google.zxing.client.result.ResultParser;
 import com.google.zxing.common.HybridBinarizer;
-import com.hbb20.BuildConfig;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -88,7 +87,6 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     Button sugg_button;
 
     boolean mPermission = false;
-    boolean isQRGenerated = true;
     private String mQRType ;
 
     private TypeCheckClass mTypeCheckClass ;
@@ -367,6 +365,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     }
 
 
+
+
     // Share code data
     private void shareQR() {
         // share using File Provider
@@ -398,6 +398,8 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
             Toast.makeText(this, "No QR code to share ...", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     // save qr code
     private void saveToGallery() {
@@ -487,10 +489,13 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         }
         if(v == delete_img){
             DeleteQR();
-        } else if(v == copy_img){
+        }
+        if(v == copy_img){
             Copycode();
-        }else if(v == share_img){
+        }
+        if(v == share_img){
             shareQR();
+
         }
 
     }
@@ -519,7 +524,11 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 }
                 break;
             case R.id.feedback:
-                FeedbackQR();
+                    FeedbackQR();
+                break;
+
+            case R.id.about:
+                    Aboutus();
                 break;
 
             default:
@@ -527,6 +536,11 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         }
         return super.onOptionsItemSelected(item);
 
+    }
+
+// About us page
+    private void Aboutus() {
+        startActivity(new Intent(getApplicationContext(),AboutUS.class));
     }
 
     // feedback to QR code
