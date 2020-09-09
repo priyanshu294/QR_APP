@@ -310,7 +310,7 @@ public class GeoLocation extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         // create qr code btn
         if(v==button) {
-            String data = "geo: " + (editText_lat.getText().toString()) + "," + (editText_long.getText().toString());
+            String data = "geo:" + (editText_lat.getText().toString()) + "," + (editText_long.getText().toString());
 
             String data_lat = editText_lat.getText().toString();
             String data_long = editText_long.getText().toString();

@@ -234,7 +234,7 @@ public class SMS extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         // create code btn
         if(v == button){
-            String data =   (editText_num.getText().toString()) + ":" + (editText_mes.getText().toString());
+            String data =   (editText_num.getText().toString())+"?body="+(editText_mes.getText().toString());
 
             String data_phone = editText_num.getText().toString() ;
             String data_mess = editText_mes.getText().toString() ;
@@ -248,7 +248,7 @@ public class SMS extends AppCompatActivity implements View.OnClickListener {
                 editText_num.setError("Enter Valid Phone Number.");
             }
             else {
-                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 300);
+                QRGEncoder qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.SMS, 250);
 
                 try {
                     Bitmap qrBits = qrgEncoder.getBitmap();

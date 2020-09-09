@@ -272,8 +272,10 @@ public class Email extends AppCompatActivity implements View.OnClickListener,Vie
         @Override
         public void onClick (View view){
             if (view == button) {
-                String data1 =  (editText_add.getText().toString()) + "\n sub: " +
-                        (editText_sub.getText().toString()) + "\n body: " + (editText_mes.getText().toString());
+                String data1 =  (editText_add.getText().toString()) + "?&subject=" +
+                        (editText_sub.getText().toString()) + "&body=" + (editText_mes.getText().toString());
+
+                Log.d(TAG, "onClick() EMAIL QR Uri = "+data1);
 
                 String data_email = editText_add.getText().toString();
                 String data_sub = editText_sub.getText().toString();

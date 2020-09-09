@@ -8,12 +8,15 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.MailTo;
@@ -85,6 +88,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
     Button sugg_button;
 
     boolean mPermission = false;
+    boolean isQRGenerated = true;
     private String mQRType ;
 
     private TypeCheckClass mTypeCheckClass ;
@@ -123,8 +127,9 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         IntentSuggestions();
 // Give suggestion for different QR code   btn
         sugg_button.setOnClickListener(this);
-        share_img.setOnClickListener(this);
         delete_img.setOnClickListener(this);
+        copy_img.setOnClickListener(this);
+        share_img.setOnClickListener(this);
     }
 
     private void SetUpQRCode(){
@@ -302,7 +307,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         sms_intent.putExtra("address", number);
         sms_intent.putExtra("sms_body", message);
         try {
-            //Intent chooser = Intent.createChooser(sms_intent, "Send SMS with :");
+           // Intent chooser = Intent.createChooser(sms_intent, "Send SMS with :");
             startActivity(sms_intent);
         }catch(Exception e){
             Log.e(TAG, "SentMessage() EXCEPTION "+e.getMessage() );
@@ -343,6 +348,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 public void onClick(DialogInterface dialog, int which) {
                     Toast.makeText(Suggestion.this, "QR deleted ...",Toast.LENGTH_SHORT).show();
                     qr_code_img.setImageDrawable(null);
+                    qr_code_img.setBackgroundColor(Color.rgb(128,128,128));
                     content_txt.setText("");
                 }
             });
@@ -359,6 +365,7 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         }
 
     }
+
 
     // Share code data
     private void shareQR() {
@@ -478,14 +485,16 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(this, "No data found ...", Toast.LENGTH_SHORT).show();
             }
         }
-        if (v == share_img) {
-
-            shareQR();
-        }
         if(v == delete_img){
             DeleteQR();
+        } else if(v == copy_img){
+            Copycode();
+        }else if(v == share_img){
+            shareQR();
         }
+
     }
+
     // Action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -509,6 +518,9 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
                     saveToGallery();
                 }
                 break;
+            case R.id.feedback:
+                FeedbackQR();
+                break;
 
             default:
 
@@ -516,6 +528,21 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
         return super.onOptionsItemSelected(item);
 
     }
+
+    // feedback to QR code
+    private void FeedbackQR(){
+        startActivity(new Intent(getApplicationContext(),Feedback.class));
+    }
+
+    // Copy to clipboard
+    private void Copycode(){
+        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("text", content_txt.getText().toString());
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(Suggestion.this, "Copied Successfully",Toast.LENGTH_SHORT).show();
+
+    }
+
 
     private boolean hasImage (@NonNull ImageView view){
         Drawable drawable = view.getDrawable();
