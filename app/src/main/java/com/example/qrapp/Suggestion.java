@@ -545,7 +545,11 @@ public class Suggestion extends AppCompatActivity implements View.OnClickListene
 
     // feedback to QR code
     private void FeedbackQR(){
-        startActivity(new Intent(getApplicationContext(),Feedback.class));
+        Intent intent = new Intent(Intent.ACTION_SENDTO)
+                .setData(new Uri.Builder().scheme("mailto").build())
+                .putExtra(Intent.EXTRA_EMAIL, new String[]{ "ps875761@gmail.com" });
+        startActivity(intent);
+
     }
 
     // Copy to clipboard

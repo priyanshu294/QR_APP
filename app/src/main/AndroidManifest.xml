@@ -20,10 +20,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AboutUS"
-            android:parentActivityName=".Suggestion"
-            android:label="About US"/>
 
+        <activity
+            android:name=".AboutUS"
+            android:label="About US"
+            android:parentActivityName=".Suggestion" />
         <activity
             android:name=".Feedback"
             android:label="Feedback"
@@ -84,7 +85,9 @@
             android:name=".Scanner"
             android:label="Scan QR Code"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
+            <activity android:name=".splash_screen"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

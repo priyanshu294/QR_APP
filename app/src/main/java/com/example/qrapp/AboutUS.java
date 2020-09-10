@@ -22,7 +22,7 @@ public class AboutUS extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_u_s);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Element adsElement = new Element();
         View aboutPage = new AboutPage(this)
@@ -44,7 +44,7 @@ public class AboutUS extends AppCompatActivity {
         Element copyright = new Element();
         @SuppressLint("DefaultLocale") final String copyrightString = String.format("Copyright %d by Priyanshu kumar", Calendar.getInstance().get(Calendar.YEAR));
         copyright.setTitle(copyrightString);
-         copyright.setIconDrawable(R.drawable.icon_image);
+        // copyright.setIconDrawable(R.drawable.icon_image);
         copyright.setGravity(Gravity.CENTER);
         copyright.setOnClickListener(new View.OnClickListener() {
             @Override

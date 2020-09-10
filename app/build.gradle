@@ -40,5 +40,9 @@ dependencies {
     implementation 'com.hbb20:ccp:2.3.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.medyo:android-about-page:1.2.6'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.loopeer.lib:shadow:0.0.4-beta3'
+    implementation 'com.wang.avi:library:2.1.3'
 
 }
